@@ -3,9 +3,12 @@ import axios, { endpoints } from 'src/lib/axios';
 // ----------------------------------------------------------------------
 
 export async function getPosts() {
-  const res = await axios.get(endpoints.post.list);
+  // const res = await axios.get(endpoints.post.list);
 
-  return res.data;
+  // return res.data;
+  const res = await axios.get(endpoints.post.list);
+  const safeData = JSON.parse(JSON.stringify(res.data));
+  return { posts: safeData }; // <- make this shape explicit
 }
 
 // ----------------------------------------------------------------------

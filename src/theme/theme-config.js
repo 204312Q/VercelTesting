@@ -20,19 +20,19 @@ export const themeConfig = {
    *************************************** */
   palette: {
     primary: {
-      lighter: '#FACAD5',
-      light: '#F8B5BA',
-      main: '#F27C96',
-      dark: '#BCBEC0',
-      darker: '#6D6E71',
+      lighter: '#C8FAD6',
+      light: '#5BE49B',
+      main: '#00A76F',
+      dark: '#007867',
+      darker: '#004B50',
       contrastText: '#FFFFFF',
     },
     secondary: {
-      lighter: '#FACAD5',
-      light: '#F8B5BA',
-      main: '#F27C96',
-      dark: '#BCBEC0',
-      darker: '#6D6E71',
+      lighter: '#EFD6FF',
+      light: '#C684FF',
+      main: '#8E33FF',
+      dark: '#5119B7',
+      darker: '#27097A',
       contrastText: '#FFFFFF',
     },
     info: {

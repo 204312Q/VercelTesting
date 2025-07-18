@@ -8,7 +8,7 @@ import { colorPreviewClasses } from './classes';
 // ----------------------------------------------------------------------
 
 export const ColorPreview = forwardRef((props, ref) => {
-  const { sx, colors, limit = 3, size = 16, gap = 6, className, slotProps, ...other } = props;
+  const { sx, colors = [], limit = 3, size = 16, gap = 6, className, slotProps, ...other } = props;
 
   const colorsRange = colors.slice(0, limit);
   const remainingColorCount = colors.length - limit;

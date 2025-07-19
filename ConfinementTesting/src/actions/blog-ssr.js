@@ -6,9 +6,10 @@ export async function getPosts() {
   // const res = await axios.get(endpoints.post.list);
 
   // return res.data;
-  const res = await axios.get(endpoints.post.list);
+   const res = await axios.get(endpoints.post.list);
   const safeData = JSON.parse(JSON.stringify(res.data));
   return { posts: safeData }; // wrap in an object, match usage
+  
 }
 
 // ----------------------------------------------------------------------

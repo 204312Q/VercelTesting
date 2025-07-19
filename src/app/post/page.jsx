@@ -8,7 +8,15 @@ import { PostListHomeView } from 'src/sections/blog/view';
 export const metadata = { title: `Post list - ${CONFIG.appName}` };
 
 export default async function Page() {
-  const { posts } = await getPosts();
+  // const { posts } = await getPosts();
 
-  return <PostListHomeView posts={posts} />;
+  // return <PostListHomeView posts={posts} />;
+
+  try {
+    const { posts } = await getPosts();
+    return <PostListHomeView posts={posts} />;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return <div>Error loading posts</div>; // Don't throw or return error object
+  }
 }

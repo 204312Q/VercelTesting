@@ -7,13 +7,7 @@ import { GuestGuard } from 'src/auth/guard';
 export default function Layout({ children }) {
   return (
     <GuestGuard>
-      <AuthSplitLayout
-        slotProps={{
-          section: { title: 'Hi, Welcome back' },
-        }}
-      >
-        {children}
-      </AuthSplitLayout>
+      <AuthSplitLayout section={{ title: 'Hi, Welcome back' }}>{children}</AuthSplitLayout>
     </GuestGuard>
   );
 }

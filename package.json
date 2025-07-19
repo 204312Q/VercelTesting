@@ -43,6 +43,7 @@
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
+    "embla-carousel-autoplay": "^8.6.0",
     "es-toolkit": "^1.29.0",
     "framer-motion": "^11.13.1",
     "minimal-shared": "^1.0.3",

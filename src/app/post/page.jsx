@@ -9,9 +9,7 @@ export const metadata = { title: `Post list - ${CONFIG.appName}` };
 
 export default async function Page() {
   // const { posts } = await getPosts();
-
   // return <PostListHomeView posts={posts} />;
-
   try {
     const { posts } = await getPosts();
     return <PostListHomeView posts={posts} />;

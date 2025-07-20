@@ -10,14 +10,13 @@ import { AboutTestimonials } from '../about-testimonials';
 export function AboutView() {
   return (
     <>
-      hello
-      {/* <AboutHero />
+      <AboutHero />
 
       <AboutWhat />
 
       <AboutVision />
 
-      <AboutTestimonials /> */}
+      <AboutTestimonials />
     </>
   );
 }

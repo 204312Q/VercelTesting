@@ -1,4 +1,4 @@
-'use client';
+
 import { m } from 'framer-motion';
 import { forwardRef } from 'react';
 

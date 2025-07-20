@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useRef, useMemo, useEffect } from 'react';
 import { mergeClasses } from 'minimal-shared/utils';
 import { m, useInView, useAnimation } from 'framer-motion';

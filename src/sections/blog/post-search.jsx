@@ -1,3 +1,4 @@
+"use client";
 import { useState, useCallback } from 'react';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';

@@ -15,8 +15,6 @@ import { ProgressBar } from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { detectSettings } from 'src/components/settings/server';
 import { SettingsDrawer, defaultSettings, SettingsProvider } from 'src/components/settings';
-import ClientLayout from 'src/components/layouts/client-layout';
-
 
 import { CheckoutProvider } from 'src/sections/checkout/context';
 
@@ -102,7 +100,12 @@ export default async function RootLayout({ children }) {
                     modeStorageKey={themeConfig.modeStorageKey}
                   >
                     <MotionLazy>
-                      <ClientLayout>{children}</ClientLayout>
+                      <CheckoutProvider>
+                        <Snackbar />
+                        <ProgressBar />
+                        <SettingsDrawer defaultSettings={defaultSettings} />
+                        {children}
+                      </CheckoutProvider>
                     </MotionLazy>
                   </ThemeProvider>
                 </AppRouterCacheProvider>

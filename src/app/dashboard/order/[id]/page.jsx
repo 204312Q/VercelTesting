@@ -8,11 +8,12 @@ import { OrderDetailsView } from 'src/sections/order/view';
 export const metadata = { title: `Order details | Dashboard - ${CONFIG.appName}` };
 
 export default function Page({ params }) {
-  const { id } = params;
+  // const { id } = params;
 
-  const currentOrder = _orders.find((order) => order.id === id);
+  // const currentOrder = _orders.find((order) => order.id === id);
 
-  return <OrderDetailsView order={currentOrder} />;
+  // return <OrderDetailsView order={currentOrder} />;
+  return <h1>Order Details for ID: {params.id}</h1>; // Placeholder for the order details view
 }
 
 // ----------------------------------------------------------------------
@@ -22,16 +23,16 @@ export default function Page({ params }) {
  * Remove [1] and [2] if not using [2]
  * Will remove in Next.js v15
  */
-const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
-export { dynamic };
+// const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
+// export { dynamic };
 
 /**
  * [2] Static exports
  * https://nextjs.org/docs/app/building-your-application/deploying/static-exports
  */
-export async function generateStaticParams() {
-  if (CONFIG.isStaticExport) {
-    return _orders.map((order) => ({ id: order.id }));
-  }
-  return [];
-}
+// export async function generateStaticParams() {
+//   if (CONFIG.isStaticExport) {
+//     return _orders.map((order) => ({ id: order.id }));
+//   }
+//   return [];
+// }

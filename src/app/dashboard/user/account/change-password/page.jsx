@@ -9,5 +9,6 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <AccountChangePasswordView />;
+  // return <AccountChangePasswordView />;
+  return <h1>Account Change Password Settings</h1>; // Placeholder for the account change password settings view
 }

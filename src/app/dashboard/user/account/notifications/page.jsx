@@ -9,5 +9,6 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <AccountNotificationsView />;
+  // return <AccountNotificationsView />;
+  return <h1>Account Notifications Settings</h1>; // Placeholder for the account notifications settings view
 }

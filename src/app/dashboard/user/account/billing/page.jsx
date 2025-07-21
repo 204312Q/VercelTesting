@@ -9,5 +9,6 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <AccountBillingView />;
+  // return <AccountBillingView />;
+  return <h1>Account Billing Settings</h1>; // Placeholder for the account billing settings view
 }

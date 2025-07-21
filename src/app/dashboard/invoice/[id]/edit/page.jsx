@@ -8,11 +8,13 @@ import { InvoiceEditView } from 'src/sections/invoice/view';
 export const metadata = { title: `Invoice edit | Dashboard - ${CONFIG.appName}` };
 
 export default function Page({ params }) {
-  const { id } = params;
+  // const { id } = params;
 
-  const currentInvoice = _invoices.find((invoice) => invoice.id === id);
+  // const currentInvoice = _invoices.find((invoice) => invoice.id === id);
 
-  return <InvoiceEditView invoice={currentInvoice} />;
+  // return <InvoiceEditView invoice={currentInvoice} />;
+
+  return <h1>Edit Invoice for ID: {params.id}</h1>; // Placeholder for the invoice edit view
 }
 
 // ----------------------------------------------------------------------
@@ -22,16 +24,16 @@ export default function Page({ params }) {
  * Remove [1] and [2] if not using [2]
  * Will remove in Next.js v15
  */
-const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
-export { dynamic };
+// const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
+// export { dynamic };
 
 /**
  * [2] Static exports
  * https://nextjs.org/docs/app/building-your-application/deploying/static-exports
  */
-export async function generateStaticParams() {
-  if (CONFIG.isStaticExport) {
-    return _invoices.map((invoice) => ({ id: invoice.id }));
-  }
-  return [];
-}
+// export async function generateStaticParams() {
+//   if (CONFIG.isStaticExport) {
+//     return _invoices.map((invoice) => ({ id: invoice.id }));
+//   }
+//   return [];
+// }

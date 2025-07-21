@@ -9,5 +9,6 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <AccountGeneralView />;
+  // return <AccountGeneralView />;
+  return <h1>Account General Settings</h1>; // Placeholder for the account general settings view
 }

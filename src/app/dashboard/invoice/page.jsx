@@ -7,5 +7,6 @@ import { InvoiceListView } from 'src/sections/invoice/view';
 export const metadata = { title: `Invoice list | Dashboard - ${CONFIG.appName}` };
 
 export default function Page() {
-  return <InvoiceListView />;
+  // return <InvoiceListView />;
+  return <h1>Dashboard - Invoice List</h1>;
 }

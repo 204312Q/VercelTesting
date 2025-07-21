@@ -101,8 +101,8 @@ export default async function RootLayout({ children }) {
                   >
                     <MotionLazy>
                       <CheckoutProvider>
-                        {/* <Snackbar /> */}
-                        <ProgressBar />
+                        <Snackbar />
+                        {/* <ProgressBar /> */}
                         <SettingsDrawer defaultSettings={defaultSettings} />
                         {children}
                       </CheckoutProvider>

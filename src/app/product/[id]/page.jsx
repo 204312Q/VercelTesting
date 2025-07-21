@@ -8,12 +8,13 @@ import { ProductShopDetailsView } from 'src/sections/product/view';
 export const metadata = { title: `Product details - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
-  const { id } = params;
-  const { product } = await getProduct(id);
-  const addonResult = await getAddon();
-  const addon = addonResult?.addon ?? addonResult; // fallback if getAddon returns the addon directly
-  console.log('addon_index:', addon);
-  return <ProductShopDetailsView product={product} addon={addon}/>;
+  // const { id } = params;
+  // const { product } = await getProduct(id);
+  // const addonResult = await getAddon();
+  // const addon = addonResult?.addon ?? addonResult; // fallback if getAddon returns the addon directly
+  // console.log('addon_index:', addon);
+  // return <ProductShopDetailsView product={product} addon={addon}/>;
+  return <h1>Product Details Page</h1>; // Placeholder for the product details view
 }
 
 // ----------------------------------------------------------------------
@@ -23,8 +24,8 @@ export default async function Page({ params }) {
  * Remove [1] and [2] if not using [2]
  * Will remove in Next.js v15
  */
-const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
-export { dynamic };
+// const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
+// export { dynamic }; // what i used
 
 /**
  * [2] Static exports

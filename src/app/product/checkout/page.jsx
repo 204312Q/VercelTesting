@@ -7,5 +7,6 @@ import { CheckoutView } from 'src/sections/checkout/view';
 export const metadata = { title: `Checkout - ${CONFIG.appName}` };
 
 export default function Page() {
-  return <CheckoutView />;
+  // return <CheckoutView />;
+  return <h1>Checkout Page</h1>; // Placeholder for the checkout view
 }

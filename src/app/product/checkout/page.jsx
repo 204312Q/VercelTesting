@@ -1,12 +1,11 @@
 import { CONFIG } from 'src/global-config';
 
-// import { CheckoutView } from 'src/sections/checkout/view';
+import { CheckoutView } from 'src/sections/checkout/view';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Checkout - ${CONFIG.appName}` };
+export const metadata = { title: `Checkout - ${CONFIG.appName}` };
 
 export default function Page() {
-  // return <CheckoutView />;
-  return <h1>Checkout Page</h1>; // Placeholder for the checkout view
+  return <CheckoutView />;
 }

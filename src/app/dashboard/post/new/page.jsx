@@ -4,7 +4,7 @@ import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Create a new post | Dashboard - ${CONFIG.appName}` };
+export const metadata = { title: `Create a new post | Dashboard - ${CONFIG.appName}` };
 
 export default function Page() {
   // return <PostCreateView />;

@@ -1,20 +1,20 @@
 import { CONFIG } from 'src/global-config';
 // import axios, { endpoints } from 'src/lib/axios';
-// import { getProduct, getAddon } from 'src/actions/product-ssr';
-// import { ProductShopDetailsView } from 'src/sections/product/view';
+
+import { getProduct, getAddon } from 'src/actions/product-ssr';
+import { ProductShopDetailsView } from 'src/sections/product/view';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Product details - ${CONFIG.appName}` };
+export const metadata = { title: `Product details - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
-  // const { id } = params;
-  // const { product } = await getProduct(id);
-  // const addonResult = await getAddon();
-  // const addon = addonResult?.addon ?? addonResult; // fallback if getAddon returns the addon directly
-  // console.log('addon_index:', addon);
-  // return <ProductShopDetailsView product={product} addon={addon}/>;
-  return <h1>Product Details Page</h1>; // Placeholder for the product details view
+  const { id } = params;
+  const { product } = await getProduct(id);
+  const addonResult = await getAddon();
+  const addon = addonResult?.addon ?? addonResult; // fallback if getAddon returns the addon directly
+  console.log('addon_index:', addon);
+  return <ProductShopDetailsView product={product} addon={addon} />;
 }
 
 // ----------------------------------------------------------------------
@@ -24,8 +24,8 @@ export default async function Page({ params }) {
  * Remove [1] and [2] if not using [2]
  * Will remove in Next.js v15
  */
-// const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
-// export { dynamic }; // what i used
+const dynamic = CONFIG.isStaticExport ? 'auto' : 'force-dynamic';
+export { dynamic };
 
 /**
  * [2] Static exports

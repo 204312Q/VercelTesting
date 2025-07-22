@@ -4,7 +4,7 @@ import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Post list | Dashboard - ${CONFIG.appName}` };
+export const metadata = { title: `Post list | Dashboard - ${CONFIG.appName}` };
 
 export default function Page() {
   return <h1>Post List</h1>;

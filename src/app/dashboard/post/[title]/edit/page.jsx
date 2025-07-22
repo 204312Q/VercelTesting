@@ -7,7 +7,7 @@ import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Post edit | Dashboard - ${CONFIG.appName}` };
+export const metadata = { title: `Post edit | Dashboard - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
   // const { title } = params;
@@ -15,7 +15,7 @@ export default async function Page({ params }) {
   // const { post } = await getPost(title);
 
   // return <PostEditView post={post} />;
-  return <h1>Edit Post: {kebabCase(params.title)}</h1>; // Placeholder for the post edit view
+  return <h1>Edit Post</h1>; // Placeholder for the post edit view
 }
 
 // ----------------------------------------------------------------------

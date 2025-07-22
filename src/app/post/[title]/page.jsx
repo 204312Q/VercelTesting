@@ -8,7 +8,7 @@ import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Post details - ${CONFIG.appName}` };
+export const metadata = { title: `Post details - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
   // const { title } = params;

@@ -1,12 +1,11 @@
 import { CONFIG } from 'src/global-config';
 
-// import { JwtSignUpView } from 'src/auth/view/jwt';
+import { JwtSignUpView } from 'src/auth/view/jwt';
 
 // ----------------------------------------------------------------------
 
-// export const metadata = { title: `Sign up | Jwt - ${CONFIG.appName}` };
+export const metadata = { title: `Sign up | Jwt - ${CONFIG.appName}` };
 
 export default function Page() {
-  // return <JwtSignUpView />;
-  return <h1>Sign Up Page</h1>; // Placeholder for the actual view component
+  return <JwtSignUpView />;
 }

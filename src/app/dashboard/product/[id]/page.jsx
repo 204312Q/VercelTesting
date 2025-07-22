@@ -1,11 +1,11 @@
 import { CONFIG } from 'src/global-config';
-import axios, { endpoints } from 'src/lib/axios';
+// import axios, { endpoints } from 'src/lib/axios';
 
-import { ProductDetailsView } from 'src/sections/product/view';
+// import { ProductDetailsView } from 'src/sections/product/view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Product details | Dashboard - ${CONFIG.appName}` };
+// export const metadata = { title: `Product details | Dashboard - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
   // const { id } = params;

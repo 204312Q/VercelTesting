@@ -1,14 +1,14 @@
 import { kebabCase } from 'es-toolkit';
 
 import { CONFIG } from 'src/global-config';
-import axios, { endpoints } from 'src/lib/axios';
-import { getPost, getLatestPosts } from 'src/actions/blog-ssr';
+// import axios, { endpoints } from 'src/lib/axios';
+// import { getPost, getLatestPosts } from 'src/actions/blog-ssr';
 
-import { PostDetailsHomeView } from 'src/sections/blog/view';
+// import { PostDetailsHomeView } from 'src/sections/blog/view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Post details - ${CONFIG.appName}` };
+// export const metadata = { title: `Post details - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
   // const { title } = params;

@@ -23,9 +23,9 @@
 
 import { CONFIG } from 'src/global-config';
 // import { getPosts } from 'src/actions/blog-ssr';
-import { PostListHomeView } from 'src/sections/blog/view';
+// import { PostListHomeView } from 'src/sections/blog/view';
 
-export const metadata = { title: `Post list - ${CONFIG.appName}` };
+// export const metadata = { title: `Post list - ${CONFIG.appName}` };
 
 export default function Page() {
   return <h1>Just a test page</h1>;

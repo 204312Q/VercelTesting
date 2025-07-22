@@ -1,13 +1,13 @@
 import { kebabCase } from 'es-toolkit';
 
 import { CONFIG } from 'src/global-config';
-import axios, { endpoints } from 'src/lib/axios';
+// import axios, { endpoints } from 'src/lib/axios';
 
-import { PostEditView } from 'src/sections/blog/view';
+// import { PostEditView } from 'src/sections/blog/view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Post edit | Dashboard - ${CONFIG.appName}` };
+// export const metadata = { title: `Post edit | Dashboard - ${CONFIG.appName}` };
 
 export default async function Page({ params }) {
   // const { title } = params;

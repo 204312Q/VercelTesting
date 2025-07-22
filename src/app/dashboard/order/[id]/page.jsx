@@ -1,11 +1,11 @@
 import { _orders } from 'src/_mock/_order';
 import { CONFIG } from 'src/global-config';
 
-import { OrderDetailsView } from 'src/sections/order/view';
+// import { OrderDetailsView } from 'src/sections/order/view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Order details | Dashboard - ${CONFIG.appName}` };
+// export const metadata = { title: `Order details | Dashboard - ${CONFIG.appName}` };
 
 export default function Page({ params }) {
   // const { id } = params;

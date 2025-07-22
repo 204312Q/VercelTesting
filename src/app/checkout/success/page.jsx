@@ -10,10 +10,11 @@ export default function CheckoutSuccessPage() {
     }, [onResetCart]);
 
     return (
-        <CheckoutOrderComplete
-            open // ensures the Dialog is visible
-            onResetCart={onResetCart}
-            onDownloadPDF={() => { /* implement PDF download if needed */ }}
-        />
+        // <CheckoutOrderComplete
+        //     open // ensures the Dialog is visible
+        //     onResetCart={onResetCart}
+        //     onDownloadPDF={() => { /* implement PDF download if needed */ }}
+        // />
+        <h1>Checkout Success Page</h1> // Placeholder for the actual view component
     );
 }

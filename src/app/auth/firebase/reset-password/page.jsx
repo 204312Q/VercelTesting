@@ -7,5 +7,6 @@ import { FirebaseResetPasswordView } from 'src/auth/view/firebase';
 export const metadata = { title: `Reset password | Firebase - ${CONFIG.appName}` };
 
 export default function Page() {
-  return <FirebaseResetPasswordView />;
+  // return <FirebaseResetPasswordView />;
+  return <h1>Reset Password Page</h1>; // Placeholder for the actual view component
 }

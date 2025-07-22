@@ -9,5 +9,6 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <CenteredUpdatePasswordView />;
+  // return <CenteredUpdatePasswordView />;
+  return <h1>Update Password Page - demo</h1>; // Placeholder for the actual view component
 }

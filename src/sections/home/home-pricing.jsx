@@ -1,3 +1,5 @@
+'use client';
+
 import { m } from 'framer-motion';
 import { useTabs } from 'minimal-shared/hooks';
 import { varAlpha } from 'minimal-shared/utils';

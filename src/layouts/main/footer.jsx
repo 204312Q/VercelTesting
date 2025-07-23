@@ -6,15 +6,17 @@ import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import Image from 'next/image';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { _socials } from 'src/_mock';
-import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from 'src/assets/icons';
+import { _socials, _paymenttypes } from 'src/_mock';
+import { FacebookIcon, InstagramIcon } from 'src/assets/icons';
 
 import { Logo } from 'src/components/logo';
-
+import { dir } from 'i18next';
+import { primary } from 'src/theme';
 // ----------------------------------------------------------------------
 
 const LINKS = [
@@ -46,10 +48,6 @@ const INFO = [
             3: 'Sun, PH Closed'
           },
         ]
-      },
-      {
-        name: 'Please Note',
-        info: `For E.D.D selection/new orders/next day activation/meal postponement and etc, we would need 1 working day's notice (before 2PM) for delivery on weekdays or 2 working day's notice (before 2PM) for delivery on weekends and PH. Any orders, activations or changes after operating hours would require 2 working day's notice. Additional $20/trip for delivery to Sentosa. Do check with our team for menu schedules.`
       }
     ],
   }
@@ -63,6 +61,8 @@ const FooterRoot = styled('footer')(({ theme }) => ({
 }));
 
 export function Footer({ sx, layoutQuery = 'md', ...other }) {
+  const currentYear = new Date().getFullYear();
+
   return (
     <FooterRoot sx={sx} {...other}>
       <Divider />
@@ -91,7 +91,9 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
             }),
           ]}
         >
-          <Grid size={{ xs: 12, [layoutQuery]: 3 }}>
+          <Grid size={{ xs: 12, [layoutQuery]: 3 }} sx={(theme) => ({
+            color: theme.vars.palette.primary.main,
+          })}>
             <Typography
               variant="body2"
               sx={(theme) => ({
@@ -108,6 +110,7 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
               sx={(theme) => ({
                 mx: 'auto',
                 maxWidth: 280,
+                mt: 1,
                 [theme.breakpoints.up(layoutQuery)]: { mx: 'unset' },
               })}
             >
@@ -123,7 +126,6 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
             >
               Email: confinement@chillipadi.com.sg
             </Typography>
-
             <Box
               sx={(theme) => ({
                 mt: 3,
@@ -140,6 +142,29 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                 </IconButton>
               ))}
             </Box>
+            <Box
+              sx={(theme) => ({
+                mt: 3,
+                mb: 5,
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center', // Center image on mobile
+                [theme.breakpoints.up(layoutQuery)]: { mb: 0, justifyContent: 'center', alignItems: 'flex-start' },
+              })}
+            >
+              <Typography component="div" variant="overline">
+                Affiliates
+              </Typography>
+              <Image
+                src="/logo/Chilli_padi_logo.png"
+                alt="Chilli Padi Nonya Catering"
+                width={60}
+                height={120}
+                style={{ objectFit: 'contain' }}
+              />
+            </Box>
+
           </Grid>
 
           <Grid size={{ xs: 12, [layoutQuery]: 6 }}>
@@ -163,7 +188,7 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                     [theme.breakpoints.up(layoutQuery)]: { alignItems: 'flex-start' },
                   })}
                 >
-                  <Typography component="div" variant="overline">
+                  <Typography component="div" variant="overline" sx={{ color: primary.main }}>
                     {list.headline}
                   </Typography>
 
@@ -192,7 +217,7 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                     [theme.breakpoints.up(layoutQuery)]: { alignItems: 'flex-start' },
                   })}
                 >
-                  <Typography component="div" variant="overline">
+                  <Typography component="div" variant="overline" sx={{ color: primary.main }}>
                     {list.headline}
                   </Typography>
 
@@ -214,41 +239,38 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                       }
                     </Typography>
                   ))}
+                  <Box
+                    sx={(theme) => ({
+                      mb: 5,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: 2, // Add gap between images
+                      [theme.breakpoints.up(layoutQuery)]: { mb: 0, justifyContent: 'flex-start' },
+                    })}
+                  >
+                    {_paymenttypes.map((payment) => (
+                      <Image key={payment.label} src={payment.image} alt={payment.label} width={40} height={40} />
+                    ))}
+                  </Box>
                 </Box>
               ))}
             </Box>
           </Grid>
         </Grid>
         <Typography variant="body2" sx={{ mt: 10 }}>
-          © All rights reserved.
+          © {currentYear}{' '}
+          <Link
+            href="/"
+            rel="noopener"
+            color="inherit"
+            underline="always"
+          >
+            Confinement Food Delivery | Chilli Padi Confinement
+          </Link>
+          {' '}
+          All Rights Reserved.
         </Typography>
       </Container>
-    </FooterRoot>
-  );
-}
-
-// ----------------------------------------------------------------------
-
-export function HomeFooter({ sx, ...other }) {
-  return (
-    <FooterRoot
-      sx={[
-        {
-          py: 5,
-          textAlign: 'center',
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
-    >
-      <Container>
-        <Logo />
-        <Box sx={{ mt: 1, typography: 'caption' }}>
-          © All rights reserved.
-          <br /> made by
-          <Link href="https://minimals.cc/"> minimals.cc </Link>
-        </Box>
-      </Container>
-    </FooterRoot>
+    </FooterRoot >
   );
 }

@@ -103,10 +103,11 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })(({ active, open, them
 /**
  * @slot title
  */
-const ItemTitle = styled('span', { shouldForwardProp })(({ theme }) => ({
+const ItemTitle = styled('span', { shouldForwardProp })(({ theme, active }) => ({
   ...navItemStyles.title(theme),
   ...theme.typography.body2,
   fontWeight: theme.typography.fontWeightMedium,
+  color: theme.vars.palette.primary.main,
   variants: [
     { props: { variant: 'subItem' }, style: { fontSize: theme.typography.pxToRem(13) } },
     { props: { active: true }, style: { fontWeight: theme.typography.fontWeightSemiBold } },

@@ -80,6 +80,7 @@ export function NavMobile({ data, open, onClose, slots, sx }) {
 
           <Button
             fullWidth
+            color='primary'
             variant="contained"
             rel="noopener"
             href={paths.product.root}

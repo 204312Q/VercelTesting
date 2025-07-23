@@ -3,6 +3,6 @@
 export const navData = [
   { title: 'About Us', path: '/about-us' },
   { title: 'Menu', path: '/menu' },
-  { title: 'Confinement Tips', path: '/post' },
+  { title: 'Articles', path: '/post' },
   { title: 'FAQ', path: '/faqs' }
 ];

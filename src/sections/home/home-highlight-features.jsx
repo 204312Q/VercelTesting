@@ -1,3 +1,4 @@
+'use client';
 import { useRef, useState } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
 import { useClientRect } from 'minimal-shared/hooks';

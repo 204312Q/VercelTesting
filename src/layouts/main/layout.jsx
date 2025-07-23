@@ -13,7 +13,7 @@ import { Logo } from 'src/components/logo';
 
 import { NavMobile } from './nav/mobile';
 import { NavDesktop } from './nav/desktop';
-import { Footer, HomeFooter } from './footer';
+import { Footer } from './footer';
 import { MainSection } from '../core/main-section';
 import { MenuButton } from '../components/menu-button';
 import { LayoutSection } from '../core/layout-section';
@@ -29,7 +29,7 @@ export function MainLayout({ sx, cssVars, children, slotProps, layoutQuery = 'md
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
 
-  const isHomePage = pathname === '/';
+  // const isHomePage = pathname === '/';
 
   const navData = slotProps?.nav?.data ?? mainNavData;
 
@@ -78,6 +78,7 @@ export function MainLayout({ sx, cssVars, children, slotProps, layoutQuery = 'md
             {/** @slot Purchase button */}
             <Button
               variant="contained"
+              color="primary"
               rel="noopener"
               href={paths.product.root}
               sx={(theme) => ({
@@ -104,11 +105,8 @@ export function MainLayout({ sx, cssVars, children, slotProps, layoutQuery = 'md
   };
 
   const renderFooter = () =>
-    isHomePage ? (
-      <HomeFooter sx={slotProps?.footer?.sx} />
-    ) : (
-      <Footer sx={slotProps?.footer?.sx} layoutQuery={layoutQuery} />
-    );
+    <Footer sx={slotProps?.footer?.sx} layoutQuery={layoutQuery} />
+
 
   const renderMain = () => <MainSection {...slotProps?.main}>{children}</MainSection>;
 

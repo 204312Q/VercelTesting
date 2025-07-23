@@ -84,7 +84,7 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })(({ theme }) => {
     width: '100%',
     paddingLeft: theme.spacing(2.5),
     paddingRight: theme.spacing(1.5),
-    color: theme.vars.palette.text.secondary,
+    color: theme.vars.palette.primary.main,
     variants: [
       { props: { open: true }, style: openStyles },
       { props: { active: true }, style: activeStyles },

@@ -1,4 +1,6 @@
+import { label } from 'yet-another-react-lightbox';
 import { _mock } from './_mock';
+import Image from 'next/image';
 
 // ----------------------------------------------------------------------
 
@@ -120,6 +122,22 @@ export const _socials = [
     path: 'https://www.instagram.com/chillipadiconfinement/',
   }
 ];
+
+export const _paymenttypes = [
+  {
+    value: 'Visa',
+    image: '/payment/visa.svg',
+  },
+  {
+    value: 'Mastercard',
+    image: '/payment/mastercard.svg',
+  },
+  {
+    value: 'UnionPay',
+    image: '/payment/unionpay.svg',
+  }
+];
+    
 
 // ----------------------------------------------------------------------
 

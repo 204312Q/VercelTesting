@@ -1,10 +1,12 @@
-const isStaticExport = 'false';
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
+
   env: {
-    BUILD_STATIC_EXPORT: isStaticExport,
+    // You can keep this if needed for client-side
+    BUILD_STATIC_EXPORT: 'false',
   },
+
   modularizeImports: {
     '@mui/icons-material': {
       transform: '@mui/icons-material/{{member}}',
@@ -16,17 +18,17 @@ const nextConfig = {
       transform: '@mui/lab/{{member}}',
     },
   },
+
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
-
     return config;
   },
-  ...(isStaticExport === 'true' && {
-    output: 'export',
-  }),
+
+  // ✅ This is the ONLY valid output mode for Prisma + API routes
+  output: 'standalone',
 };
 
 export default nextConfig;

@@ -12,9 +12,9 @@ export const themeConfig = {
    * Typography
    *************************************** */
   fontFamily: {
-    primary: 'Public Sans Variable',
-    secondary: 'Barlow',
-  },
+  primary: 'Avenir LT Std, Public Sans Variable, Arial, sans-serif',
+  secondary: 'Avenir LT Std, Public Sans Variable, Arial, sans-serif',
+},
   /** **************************************
    * Palette
    *************************************** */

@@ -4,7 +4,7 @@ import { Carousel, useCarousel, CarouselDotButtons } from 'src/components/carous
 
 
 export function HomeHero({ data }) {
-  const carousel = useCarousel({ loop: true }, [Autoplay({ playOnInit: true, delay: 5000 })]);
+  const carousel = useCarousel({ loop: true }, [Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: false })]);
   return (
     <Box
       sx={{

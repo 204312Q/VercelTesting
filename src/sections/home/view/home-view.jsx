@@ -7,43 +7,19 @@ import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 
 import { ScrollProgress, useScrollProgress } from 'src/components/animate/scroll-progress';
-import { SectionTitle } from '../components/section-title';
 
 import { HomeHero } from '../home-hero';
-import { HomeFAQs } from '../home-faqs';
-import { HomeZoneUI } from '../home-zone-ui';
-import { HomeMinimal } from '../home-minimal';
-import { HomePricing } from '../home-pricing';
-import { HomeForDesigner } from '../home-for-designer';
-import { HomeTestimonials } from '../home-testimonials';
-import { HomeIntegrations } from '../home-integrations';
-import { HomeAdvertisement } from '../home-advertisement';
-import { HomeHugePackElements } from '../home-hugepack-elements';
-import { HomeHighlightFeatures } from '../home-highlight-features';
-
+import { TopPackages } from '../home-top-packages';
+import { Benefits } from '../home-benefit';
+import { HomeFeature } from '../home-feature';
+import { HomeMenu } from '../home-menu';
+import { HomePopularDish } from '../home-populardish';
+import { HomeOrderSteps } from '../home-orderSteps';
+import { HomePartners } from '../home-partners';
 
 import { _mock } from 'src/_mock';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
-const SLIDES = [
-  {
-    id: 1,
-    title: 'Banner 1',
-    coverUrl: '/banners/Confinement_Banner.jpg',
-  },
-  {
-    id: 2,
-    title: 'Banner 2',
-    coverUrl: '/banners/Confinement_Banner_2.png',
-  },
-  {
-    id: 3,
-    title: 'Banner 3',
-    coverUrl: '/banners/Confinement_Banner_3.jpg',
-  },
-];
-
+import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -51,6 +27,23 @@ export function HomeView() {
   const pageProgress = useScrollProgress();
 
   const { onBackToTop, isVisible } = useBackToTop('90%');
+  const [banners, setBanners] = useState([]);
+
+  useEffect(() => {
+    const fetchBanners = () => {
+      fetch('/api/banner')
+        .then((res) => res.json())
+        .then((data) => {
+          const activeBanners = data.filter((b) => b.isActive);
+          setBanners(activeBanners);
+        })
+        .catch((err) => console.error('Error fetching banners:', err));
+   };
+    
+   fetchBanners();
+   const interval = setInterval(fetchBanners, 30000); // Refresh every 30 secs
+    return () => clearInterval(interval); 
+}, []);
 
   return (
     <>
@@ -62,7 +55,10 @@ export function HomeView() {
 
       <BackToTopButton isVisible={isVisible} onClick={onBackToTop} />
 
-      <HomeHero data={SLIDES.slice(0, 3)} />
+      <HomeHero data={banners.map((b) => ({
+        ...b,
+        coverUrl: b.imageUrl,
+      }))} />
 
       <Stack
         sx={{
@@ -71,61 +67,15 @@ export function HomeView() {
           py: { xs: 2, sm: 4, md: 6 },
         }}
       >
-        <HomePricing />
+        <TopPackages />
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            py: { xs: 2, sm: 3 },
-            px: { xs: 2, sm: 4 },
-            my: { xs: 2, sm: 3 },
-            width: { xs: '100%', sm: '90%', md: '90%' },
-            mx: 'auto',
-            textAlign: 'center',
-          }}
-        >
-          <Typography
-            variant="h4"
-            component="div"
-            fontWeight="bold"
-            color="primary.main"
-            sx={{ fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' } }}
-          >
-            Trusted by mothers since 2011
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mt: 2, maxWidth: 600, mx: 'auto', fontSize: { xs: '1rem', sm: '1.1rem' } }}
-          >
-            Chilli Padi Confinement strives to assist new mothers transition into postpartum comfortably by delivering delicious meals which restore hormonal balance and increase the production of breastmilk.
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mt: 2, maxWidth: 600, mx: 'auto', fontSize: { xs: '1rem', sm: '1.1rem' } }}
-          >
-            Over the past decade, we have served our confinement meals to over thirty thousand new mothers. Thank you for allowing us to be a part of your confinement journey!
-          </Typography>
+        <Benefits />
+        <HomeMenu />
+        <HomeFeature />
+        <HomePopularDish />
+        <HomeOrderSteps sx={{ mt: 4 }} />
+        <HomePartners sx={{ mt: 4 }} />
 
-          {/* <SectionTitle
-            title="Our Packages"
-            description="Chilli Padi Confinement food delivery offers a wide range of packages from 7 Days to 28 Days options"
-            sx={{ mb: 5, textAlign: 'center' }}
-          /> */}
-        </Box>
-
-        {/* <HomeMinimal /> */}
-        {/* <HomeHugePackElements /> */}
-        {/* <HomeForDesigner /> */}
-        <HomeHighlightFeatures />
-        {/* <HomeIntegrations /> */}
-        {/* <HomeTestimonials /> */}
-        {/* <HomeFAQs /> */}
-        {/* <HomeZoneUI /> */}
-        {/* <HomeAdvertisement /> */}
       </Stack>
     </>
   );

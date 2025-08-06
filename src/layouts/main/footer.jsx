@@ -136,7 +136,14 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
               })}
             >
               {_socials.map((social) => (
-                <IconButton key={social.label}>
+                <IconButton
+                  key={social.label}
+                  component="a"
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                >
                   {social.value === 'facebook' && <FacebookIcon />}
                   {social.value === 'instagram' && <InstagramIcon />}
                 </IconButton>
@@ -153,7 +160,7 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                 [theme.breakpoints.up(layoutQuery)]: { mb: 0, justifyContent: 'center', alignItems: 'flex-start' },
               })}
             >
-              <Typography component="div" variant="overline">
+              <Typography component="div" variant="h6">
                 Affiliates
               </Typography>
               <Image
@@ -188,7 +195,7 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                     [theme.breakpoints.up(layoutQuery)]: { alignItems: 'flex-start' },
                   })}
                 >
-                  <Typography component="div" variant="overline" sx={{ color: primary.main }}>
+                  <Typography component="div" variant="h6" sx={{ color: primary.main }}>
                     {list.headline}
                   </Typography>
 
@@ -217,7 +224,7 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                     [theme.breakpoints.up(layoutQuery)]: { alignItems: 'flex-start' },
                   })}
                 >
-                  <Typography component="div" variant="overline" sx={{ color: primary.main }}>
+                  <Typography component="div" variant="h6" sx={{ color: primary.main }}>
                     {list.headline}
                   </Typography>
 
@@ -231,8 +238,8 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                       {link.name}
                       {link.info &&
                         (Array.isArray(link.info)
-                          ? Object.values(link.info[0]).map((item, idx) => (
-                            <span key={idx} style={{ display: 'block' }}>{item}</span>
+                          ? Object.entries(link.info[0]).map(([key, item]) => (
+                            <span key={key} style={{ display: 'block' }}>{item}</span>
                           ))
                           : <span style={{ display: 'block' }}>{link.info}</span>
                         )
@@ -244,12 +251,12 @@ export function Footer({ sx, layoutQuery = 'md', ...other }) {
                       mb: 5,
                       display: 'flex',
                       justifyContent: 'center',
-                      gap: 2, // Add gap between images
+                      gap: 2,
                       [theme.breakpoints.up(layoutQuery)]: { mb: 0, justifyContent: 'flex-start' },
                     })}
                   >
                     {_paymenttypes.map((payment) => (
-                      <Image key={payment.label} src={payment.image} alt={payment.label} width={40} height={40} />
+                      <Image key={payment.id} src={payment.image} alt={payment.value} width={40} height={40} />
                     ))}
                   </Box>
                 </Box>

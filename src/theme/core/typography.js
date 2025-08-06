@@ -32,81 +32,94 @@ const secondaryFont = setFont(themeConfig.fontFamily.secondary);
 export const typography = {
   fontFamily: primaryFont,
   fontSecondaryFamily: secondaryFont,
-  fontWeightLight: '300',
-  fontWeightRegular: '400',
-  fontWeightMedium: '500',
-  fontWeightSemiBold: '600',
-  fontWeightBold: '700',
+  fontWeightLight: 400,
+  fontWeightRegular: 400,
+  fontWeightMedium: 500,
+  fontWeightSemiBold: 500,
+  fontWeightBold: 500,
   h1: {
-    fontFamily: secondaryFont,
-    fontWeight: 800,
-    lineHeight: 80 / 64,
+    fontFamily: primaryFont,
+    fontWeight: 500, // Medium
+    lineHeight: 1.15,
     fontSize: pxToRem(40),
     ...responsiveFontSizes({ sm: 52, md: 58, lg: 64 }),
   },
   h2: {
-    fontFamily: secondaryFont,
-    fontWeight: 800,
-    lineHeight: 64 / 48,
+    fontFamily: primaryFont,
+    fontWeight: 500, // Medium
+    lineHeight: 1.2,
     fontSize: pxToRem(32),
     ...responsiveFontSizes({ sm: 40, md: 44, lg: 48 }),
   },
   h3: {
-    fontFamily: secondaryFont,
-    fontWeight: 700,
-    lineHeight: 1.5,
+    fontFamily: primaryFont,
+    fontWeight: 500, // Medium
+    lineHeight: 1.3,
     fontSize: pxToRem(24),
     ...responsiveFontSizes({ sm: 26, md: 30, lg: 32 }),
   },
   h4: {
-    fontWeight: 700,
-    lineHeight: 1.5,
+    fontFamily: primaryFont,
+    fontWeight: 500, // Medium
+    lineHeight: 1.4,
     fontSize: pxToRem(20),
     ...responsiveFontSizes({ md: 24 }),
   },
   h5: {
-    fontWeight: 700,
+    fontFamily: primaryFont,
+    fontWeight: 500, // Medium
     lineHeight: 1.5,
     fontSize: pxToRem(18),
     ...responsiveFontSizes({ sm: 19 }),
   },
   h6: {
-    fontWeight: 600,
-    lineHeight: 28 / 18,
+    fontFamily: primaryFont,
+    fontWeight: 500, // Medium
+    lineHeight: 1.5,
     fontSize: pxToRem(17),
     ...responsiveFontSizes({ sm: 18 }),
   },
   subtitle1: {
-    fontWeight: 600,
+    fontFamily: primaryFont,
+    fontWeight: 400, // Book
     lineHeight: 1.5,
     fontSize: pxToRem(16),
   },
   subtitle2: {
-    fontWeight: 600,
-    lineHeight: 22 / 14,
+    fontFamily: primaryFont,
+    fontWeight: 400, // Book
+    lineHeight: 1.5,
     fontSize: pxToRem(14),
   },
   body1: {
-    lineHeight: 1.5,
+    fontFamily: secondaryFont,
+    fontWeight: 400, // Book
+    lineHeight: 1.7,
     fontSize: pxToRem(16),
   },
   body2: {
-    lineHeight: 22 / 14,
+    fontFamily: secondaryFont,
+    fontWeight: 400, // Book
+    lineHeight: 1.7,
     fontSize: pxToRem(14),
   },
   caption: {
+    fontFamily: secondaryFont,
+    fontWeight: 400, // Book
     lineHeight: 1.5,
     fontSize: pxToRem(12),
   },
   overline: {
-    fontWeight: 700,
+    fontFamily: secondaryFont,
+    fontWeight: 400, // Book
     lineHeight: 1.5,
     fontSize: pxToRem(12),
     textTransform: 'uppercase',
   },
   button: {
-    fontWeight: 700,
-    lineHeight: 24 / 14,
+    fontFamily: secondaryFont,
+    fontWeight: 500, // Medium
+    lineHeight: 1.5,
     fontSize: pxToRem(14),
     textTransform: 'unset',
   },

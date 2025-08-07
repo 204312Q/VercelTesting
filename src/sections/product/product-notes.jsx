@@ -84,7 +84,7 @@ export function ProductNotes({ selectedCategory, selectedBundle }) {
                 items: [...BMB_MEAL, ...BMB_MEAL_EXTRAS],
                 additionalSections: [
                     {
-                        title: "Transport Information:",
+                        title: "Terms & Conditions:",
                         items: POSTNATAL_TRANSPORT
                     }
                 ]

@@ -55,11 +55,11 @@ export function validatePromoCode(code, orderData, selectedAddOns = []) {
         }
     }
 
-    // Check bundle exclusions
-    if (conditions.excludesBundles && orderData?.selectedBundles?.length > 0) {
+    // Check bundle exclusions - Global rule: no promo codes allowed with bundles
+    if (orderData?.selectedBundles?.length > 0) {
         return {
             valid: false,
-            error: "This promo code cannot be used with bundles"
+            error: "Promo codes cannot be used with bundles"
         };
     }
 

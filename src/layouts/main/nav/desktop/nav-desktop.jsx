@@ -8,7 +8,9 @@ export function NavDesktop({ data, sx, ...other }) {
     <Nav
       sx={[
         () => ({
-          /* Put styles */
+          height: '80px', // Set specific height for nav area
+          display: 'flex',
+          alignItems: 'center',
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}

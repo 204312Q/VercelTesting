@@ -72,101 +72,120 @@ export const PRODUCT =
         price: 38,
         duration: 1
     },
-
-];
-
-export const ADDONS = 
-[
     {
-        addon_id: 1,
-        name: "Pork Trotter Vinegar(1)",
+        product_id: 9,
+        name: "Pig's Trotter with Ginger Vinegar and Egg (1)",
         description: "A traditional dish made with pork trotters, vinegar, and spices.",
         type: "addOn",
-        image: "/menu/addon-1.webp",
+        image: "/assets/AddOn/PigTrotters.webp",
         price: 12.00,
         duration: 1
     },
     {   
-        addon_id: 2,
-        name: "Pork Trotter Vinegar(3)",
+        product_id: 10,
+        name: "Pig's Trotter with Ginger Vinegar and Egg (3)",
         description: "A traditional dish made with pork trotters, vinegar, and spices.",
         type: "addOn",
-        image: "/menu/addon-2.webp",
+        image: "/assets/AddOn/PigTrotters.webp",
         price: 35.00,
         duration: 3
     },
     {
-        addon_id: 3,
-        name: "Pork Trotter Vinegar(5)",
+        product_id: 11,
+        name: "Pig's Trotter with Ginger Vinegar and Egg (5)",
         description: "A traditional dish made with pork trotters, vinegar, and spices.",
         type: "addOn",
-        image: "/menu/addon-3.webp",
+        image: "/assets/AddOn/PigTrotters.webp",
         price: 55.00,
         duration: 5
     },
     {
-        addon_id: 4,
-        name: "Milk Boosting Fish and Papaya Soup(1)",
+        product_id: 12,
+        name: "Milk Boosting Fish and Papaya Soup (1)",
         description: "A nutritious soup made with fish and papaya, known for its milk-boosting properties.",
         type: "addOn",
-        image: "/menu/addon-4.webp",
+        image: "/assets/AddOn/FishandPapayaSoup.webp",
         price: 7.00,
         duration: 1
     },
     {
-        addon_id: 5,
-        name: "Milk Boosting Fish and Papaya Soup(3)",
+        product_id: 13,
+        name: "Milk Boosting Fish and Papaya Soup (3)",
         description: "A nutritious soup made with fish and papaya, known for its milk-boosting properties.",
         type: "addOn",
-        image: "/menu/addon-5.webp",
+        image: "/assets/AddOn/FishandPapayaSoup.webp",
         price: 20.00,
         duration: 3
     },
     {
-        addon_id: 6,
-        name: "Milk Boosting Fish and Papaya Soup(5)",
+        product_id: 14,
+        name: "Milk Boosting Fish and Papaya Soup (5)",
         description: "A nutritious soup made with fish and papaya, known for its milk-boosting properties.",
         type: "addOn",
-        image: "/menu/addon-6.webp",
+        image: "/assets/AddOn/FishandPapayaSoup.webp",
         price: 32.00,
         duration: 5
     },
     {
-        addon_id: 7,
-        name: "Homemade Bird's Nest(1)",
+        product_id: 15,
+        name: "Homemade Bird's Nest (1)",
         description: "A delicate dessert made from bird's nest, known for its health benefits.",
         type: "addOn",
-        image: "/menu/addon-7.webp",
+        image: "/assets/AddOn/BirdsNest.webp",
         price: 15.00,
         duration: 1
     },
     {
-        addon_id: 8,
-        name: "Homemade Bird's Nest(3)",
+        product_id: 16,
+        name: "Homemade Bird's Nest (3)",
         description: "A delicate dessert made from bird's nest, known for its health benefits.",
         type: "addOn",
-        image: "/menu/addon-8.webp",
+        image: "/assets/AddOn/BirdsNest.webp",
         price: 42.00,
         duration: 3
     },
     {
-        addon_id: 9,
-        name: "Homemade Bird's Nest(5)",
+        product_id: 17,
+        name: "Homemade Bird's Nest (5)",
         description: "A delicate dessert made from bird's nest, known for its health benefits.",
         type: "addOn",
-        image: "/menu/addon-9.webp",
+        image: "/assets/AddOn/BirdsNest.webp",
         price: 66.00,
         duration: 5
     },
     {
-        addon_id:10,
+        product_id: 18,
         name: "Comforting Set",
-        description: " All 3 Combo: Pig's Trotter, Milk Booting Fish & Papaya Soup and Homemade Bird's Nest",
+        description: "All 3 Combo: Pig's Trotter, Milk Booting Fish & Papaya Soup and Homemade Bird's Nest",
         type: "addOn",
-        image: "/menu/addon-9.webp",
+        image: "/assets/AddOn/ComfortingSet.webp",
         price: 32.00,
         duration: 3,
 
+    },
+    {
+        product_id: 19,
+        name: "Thermal Flask (1)",
+        description: "600ml Stainless Steel Thermal Flask",
+        type: "addOn",
+        image: "/assets/AddOn/ThermalWare.webp",
+        price: 10.00,
+        duration: 1,
+    },
+    {
+      product_id: 20,
+      name: "BMB Massage Package",
+      description: "Basic massage package only for 28 day package",
+      type: "bundle", 
+      price: 1500.00,
+      bundled_to: 1,
+    },
+    {
+      product_id: 21,
+      name: "MyQueen Staycay Package",
+      description: "2D1N stay at Oasia Hotel with 6 months personal accident coverage",
+      type: "bundle", 
+      price: 361.00,
+      bundled_to: 8,
     }
-]
-
+];

@@ -1,13 +1,16 @@
-import { CONFIG } from 'src/global-config';
-import { getProducts } from 'src/actions/product-ssr';
+import { getProducts, getAddons } from 'src/actions/product-ssr';
 
 import { ProductShopView } from 'src/sections/product/view';
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Product shop - ${CONFIG.appName}` };
+export const metadata = { title: `Our Packages` };
 
 export default async function Page() {
-  const result = await getProducts();
-  return <ProductShopView products={result} />;
+  const [packages, addons] = await Promise.all([
+    getProducts(),
+    getAddons()
+
+  ]);
+  return <ProductShopView packages={packages} addons={addons} />;
 }

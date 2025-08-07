@@ -1,7 +1,7 @@
 import { CONFIG } from 'src/global-config';
 // import axios, { endpoints } from 'src/lib/axios';
 
-import { getProduct, getAddon } from 'src/actions/product-ssr';
+import { getProduct, getAddons } from 'src/actions/product-ssr';
 import { ProductShopDetailsView } from 'src/sections/product/view';
 
 // ----------------------------------------------------------------------
@@ -11,8 +11,7 @@ export const metadata = { title: `Product details - ${CONFIG.appName}` };
 export default async function Page({ params }) {
   const { id } = params;
   const { product } = await getProduct(id);
-  const addonResult = await getAddon();
-  const addon = addonResult?.addon ?? addonResult; // fallback if getAddon returns the addon directly
+  const addon = await getAddons();
   console.log('addon_index:', addon);
   return <ProductShopDetailsView product={product} addon={addon} />;
 }

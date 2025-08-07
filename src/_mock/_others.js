@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { sizeof } from 'stylis';
 import { paths } from 'src/routes/paths';
 import { createChainableState } from '@tiptap/core';
+import { DesktopDatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -13,7 +14,7 @@ export const _carouselPackages = [
     name: '28 Days Dual Meal',
     image: '/menu/HakkaYellowWineChickenwithBlackFungus_360x.webp',
     alt: '28 Days Dual Meal',
-    description: 'Lunch and Dinner | $$/meal',
+    description: 'Lunch and Dinner | $31.57/meal',
     price: '$1,768.00'
   },
   {
@@ -21,7 +22,7 @@ export const _carouselPackages = [
     name: '14 Days Dual Meal',
     image: '/menu/Pigs_Trotter_with_Ginger_Vinegar_and_Egg.webp',
     alt: '14 Days Dual Meal',
-    description: 'Lunch and Dinner | $$/meal',
+    description: 'Lunch and Dinner | $34.57/meal',
     price: '$968.00'
   },
   {
@@ -29,7 +30,7 @@ export const _carouselPackages = [
     name: '7 Days Dual Meal',
     image: '/menu/product-2.webp',
     alt: '7 Days Dual Meal',
-    description: 'Lunch and Dinner | $$/meal',
+    description: 'Lunch and Dinner | $35.57/meal',
     price: '$498.00'
   }
 ];
@@ -118,6 +119,30 @@ export const _carouselPopularDish = [
     description: 'Wok Fried Huai Shan Noodle with Egg is a popular dish during confinement. It is believed that the dish helps to restore energy and strength after childbirth, while also providing essential nutrients for recovery.',
     chineseName: '蛋炒淮山面',
     chineseDescription: '在这个重要的月子期间，吃得好是恢复体力的关键。鱼有助于修复受损细胞，防止肌肉质量的退化。',
+  }
+];
+
+export const _packageCategories = [
+  {
+    id: 1,
+    name: "Dual Meal",
+    description: "Lunch And Dinner",
+    image: "/menu/HakkaYellowWineChickenwithBlackFungus_360x.webp",
+    startingPrice: "498.00"
+  },
+  {
+    id: 2,
+    name: "Single Meal", 
+    description: "Lunch Or Dinner",
+    image: "/menu/Pigs_Trotter_with_Ginger_Vinegar_and_Egg.webp",
+    startingPrice: "498.00"
+  },
+  {
+    id: 3,
+    name: "Trial Meal",
+    description: "Lunch Or Dinner", 
+    image: "/menu/product-2.webp",
+    startingPrice: "38.00"
   }
 ];
 
@@ -230,6 +255,11 @@ export const _socials = [
     value: 'instagram',
     label: 'Instagram',
     href: 'https://www.instagram.com/chillipadiconfinement/',
+  },
+  {
+    value: 'tiktok',
+    label: 'TikTok',
+    href: 'https://www.tiktok.com/@cpconfinement?is_from_webapp=1&sender_device=pc',
   }
 ];
 
@@ -243,11 +273,6 @@ export const _paymenttypes = [
     id: 2,
     value: 'Mastercard',
     image: '/payment/mastercard.svg',
-  },
-  {
-    id: 3,
-    value: 'UnionPay',
-    image: '/payment/unionpay.svg',
   }
 ];
     

@@ -105,7 +105,7 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })(({ active, open, them
  */
 const ItemTitle = styled('span', { shouldForwardProp })(({ theme, active }) => ({
   ...navItemStyles.title(theme),
-  ...theme.typography.body2,
+  ...theme.typography.body1, // Changed from body2 to body1
   fontWeight: theme.typography.fontWeightMedium,
   color: theme.vars.palette.primary.main,
   variants: [

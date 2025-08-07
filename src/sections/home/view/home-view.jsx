@@ -19,7 +19,24 @@ import { HomePartners } from '../home-partners';
 
 import { _mock } from 'src/_mock';
 
-import { useEffect, useState } from 'react';
+const SLIDES = [
+  {
+    id: 1,
+    title: 'Banner 1',
+    coverUrl: '/banners/Confinement_Banner.png',
+  },
+  {
+    id: 2,
+    title: 'Banner 2',
+    coverUrl: '/banners/Confinement_Banner_2.png',
+  },
+  {
+    id: 3,
+    title: 'Banner 3',
+    coverUrl: '/banners/Confinement_Banner_3.png',
+  },
+];
+
 
 // ----------------------------------------------------------------------
 
@@ -27,23 +44,6 @@ export function HomeView() {
   const pageProgress = useScrollProgress();
 
   const { onBackToTop, isVisible } = useBackToTop('90%');
-  const [banners, setBanners] = useState([]);
-
-  useEffect(() => {
-    const fetchBanners = () => {
-      fetch('/api/banner')
-        .then((res) => res.json())
-        .then((data) => {
-          const activeBanners = data.filter((b) => b.isActive);
-          setBanners(activeBanners);
-        })
-        .catch((err) => console.error('Error fetching banners:', err));
-   };
-    
-   fetchBanners();
-   const interval = setInterval(fetchBanners, 30000); // Refresh every 30 secs
-    return () => clearInterval(interval); 
-}, []);
 
   return (
     <>
@@ -55,10 +55,8 @@ export function HomeView() {
 
       <BackToTopButton isVisible={isVisible} onClick={onBackToTop} />
 
-      <HomeHero data={banners.map((b) => ({
-        ...b,
-        coverUrl: b.imageUrl,
-      }))} />
+      {/* The carousel banner */}
+      <HomeHero data={SLIDES.slice(0, 3)} />
 
       <Stack
         sx={{

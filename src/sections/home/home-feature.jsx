@@ -71,7 +71,7 @@ export function HomeFeature({ sx, ...other }) {
 
 function MemberCard({ feature }) {
   return (
-    <Card sx={{ pt: 1 }}>
+    <Card sx={{ pt: 1, height: 670, display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ px: 1 }}>
         <Image alt={feature.alt} src={feature.image} ratio="1/1" sx={{ borderRadius: 2 }} />
       </Box>
@@ -81,23 +81,26 @@ function MemberCard({ feature }) {
           p: 2,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           flexDirection: 'column',
+          flex: 1, // Takes remaining space
         }}
       >
-        <Typography variant="h6" sx={{ mt: 1, mb: 0.5 }}>
-          {feature.name}
-        </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
-          {feature.description}
-        </Typography>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="h6" sx={{ mt: 1, mb: 0.5 }}>
+            {feature.name}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
+            {feature.description}
+          </Typography>
+        </Box>
         <Button
           variant="contained"
           color="primary"
           size="large"
           href={feature.url}
           component="a"
-          sx={{ minWidth: 240 }}
+          sx={{ minWidth: 240, mt: 'auto' }}
         >
           View More
         </Button>

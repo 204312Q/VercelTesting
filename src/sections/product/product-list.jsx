@@ -24,13 +24,14 @@ const LoadingComponent = () => (
   </Box>
 );
 
-export function ProductList({ packages = [], addons = [], onProceedToOrder, loading, sx, ...other }) {
+export function ProductList({ packages = [], addons = [], loading, sx, ...other }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [orderData, setOrderData] = useState(null);
   const [specialRequests, setSpecialRequests] = useState('');
   const [deliveryData, setDeliveryData] = useState({});
   const [isDeliveryValid, setIsDeliveryValid] = useState(false);
+  const [pricingData, setPricingData] = useState({ subtotal: 0, total: 0, promoDiscount: 0 });
   const orderFormRef = useRef(null);
 
   // Optimized handlers
@@ -39,6 +40,9 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
       setSelectedAddOns([]);
       setOrderData(null);
       setSpecialRequests('');
+      setDeliveryData({});
+      setIsDeliveryValid(false);
+      setPricingData({ subtotal: 0, total: 0, promoDiscount: 0 });
     }
     setSelectedCategory(category);
   }, [selectedCategory?.id]);
@@ -63,33 +67,30 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
     setIsDeliveryValid(isValid);
   }, []);
 
+  const handlePricingChange = useCallback((pricing) => {
+    setPricingData(pricing);
+  }, []);
+
   const handleClearSelection = useCallback(() => {
     setSelectedCategory(null);
     setSelectedAddOns([]);
     setOrderData(null);
     setSpecialRequests('');
     setDeliveryData({});
+    setIsDeliveryValid(false);
+    setPricingData({ subtotal: 0, total: 0, promoDiscount: 0 });
   }, []);
-
-  // Handle proceed to order - directly pass the final order to context
-  const handleProceedToOrder = useCallback((finalOrder) => {
-    if (!onProceedToOrder) return;
-
-    console.log('Processing order:', finalOrder);
-
-    // Directly pass the final order to the context
-    onProceedToOrder(finalOrder);
-  }, [onProceedToOrder]);
 
   // Auto-scroll when category is selected
   useEffect(() => {
     if (selectedCategory && orderFormRef.current) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         orderFormRef.current.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         });
       }, 100);
+      return () => clearTimeout(timer);
     }
   }, [selectedCategory]);
 
@@ -98,16 +99,13 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
     if (!selectedCategory) return [];
 
     const categoryName = selectedCategory.name;
-    if (categoryName === "Dual Meal") {
-      return packages.filter(p => p.name.includes("Dual Meal"));
-    }
-    if (categoryName === "Single Meal") {
-      return packages.filter(p => p.name.includes("Single Meal"));
-    }
-    if (categoryName === "Trial Meal") {
-      return packages.filter(p => p.name.includes("Trial"));
-    }
-    return [];
+    const filters = {
+      "Dual Meal": p => p.name.includes("Dual Meal"),
+      "Single Meal": p => p.name.includes("Single Meal"),
+      "Trial Meal": p => p.name.includes("Trial")
+    };
+
+    return packages.filter(filters[categoryName] || (() => false));
   }, [packages, selectedCategory?.name]);
 
   // Memoize category cards rendering
@@ -175,7 +173,6 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
               flex: { xs: 1, md: 2 },
               width: '100%'
             }}>
-
               <ProductOrderForm
                 key={`order-${selectedCategory.id}`}
                 category={selectedCategory}
@@ -197,12 +194,12 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
               />
 
               <ProductDeliveryForm
-                orderTotal={orderData?.totalPrice || 0}
                 onDeliveryDataChange={handleDeliveryDataChange}
                 onValidationChange={handleDeliveryValidationChange}
+                orderTotal={pricingData.subtotal}
+                discountAmount={pricingData.promoDiscount}
               />
             </Box>
-
 
             {/* Right Column */}
             <Box sx={{
@@ -216,7 +213,7 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
                 specialRequests={specialRequests}
                 deliveryData={deliveryData}
                 isDeliveryValid={isDeliveryValid}
-                onProceedToOrder={handleProceedToOrder}
+                onPricingChange={handlePricingChange}
               />
             </Box>
           </Box>
@@ -225,15 +222,33 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
             selectedCategory={selectedCategory}
             selectedBundle={orderData?.selectedBundles}
           />
-
-
         </Suspense>
       </Box>
     );
-  }, [selectedCategory, orderData, selectedAddOns, specialRequests, deliveryData, isDeliveryValid, filteredProducts, handleClearSelection, handleOrderChange, handleAddOnChange, handleSpecialRequestChange, handleDeliveryDataChange, handleDeliveryValidationChange]);
+  }, [
+    selectedCategory,
+    orderData,
+    selectedAddOns,
+    specialRequests,
+    deliveryData,
+    isDeliveryValid,
+    pricingData,
+    filteredProducts,
+    handleClearSelection,
+    handleOrderChange,
+    handleAddOnChange,
+    handleSpecialRequestChange,
+    handleDeliveryDataChange,
+    handleDeliveryValidationChange,
+    handlePricingChange
+  ]);
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
@@ -252,7 +267,7 @@ export function ProductList({ packages = [], addons = [], onProceedToOrder, load
   );
 }
 
-// Separate CategoryCard component to prevent unnecessary re-renders
+// Memoized CategoryCard component to prevent unnecessary re-renders
 const CategoryCard = ({ category, isSelected, onClick }) => {
   const handleClick = useCallback(() => {
     onClick(category);
@@ -269,10 +284,10 @@ const CategoryCard = ({ category, isSelected, onClick }) => {
         overflow: 'hidden',
         width: '100%',
         maxWidth: { xs: 320, sm: 'none' },
+        transition: 'all 0.3s ease',
         '&:hover': {
           boxShadow: 6,
           transform: 'translateY(-2px)',
-          transition: 'all 0.3s ease'
         }
       }}
       onClick={handleClick}

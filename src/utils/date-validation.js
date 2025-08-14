@@ -34,26 +34,47 @@ export function isPublicHoliday(date) {
 }
 
 /**
- * Get the minimum selectable date based on current time
+ * Get the minimum selectable date based on current day of week and time
  * Rules:
- * - Before 2 PM: Can select from day after tomorrow (2 day block)
- * - After 2 PM: Can select from 3 days later (3 day block)
- * - This includes public holidays
+ * - Public Holiday or Sunday: now.add(3, 'day') - whole day, no hour validation
+ * - Saturday before 2pm: now.add(2, 'day')
+ * - Saturday after 2pm: now.add(3, 'day')
+ * - Weekdays (Mon-Fri) before 2pm: now.add(1, 'day')
+ * - Weekdays (Mon-Fri) after 2pm: now.add(2, 'day')
  * 
  * @returns {dayjs.Dayjs} - Minimum selectable date
  */
 export function getMinimumSelectableDate() {
     const now = dayjs();
     const currentHour = now.hour();
+    const dayOfWeek = now.day(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const isToday_PublicHoliday = isPublicHoliday(now);
     
-    // Check if current time is before 2 PM (14:00)
-    if (currentHour < 14) {
-        // 2 day block - can select from day after tomorrow
-        return now.add(2, 'day');
-    } else {
-        // 3 day block - can select from 3 days later
+    // Public Holiday or Sunday - whole day, no hour validation
+    if (dayOfWeek === 0 || isToday_PublicHoliday) {
         return now.add(3, 'day');
     }
+    
+    // Saturday
+    if (dayOfWeek === 6) {
+        if (currentHour < 14) {
+            return now.add(2, 'day'); // Before 2pm
+        } else {
+            return now.add(3, 'day'); // After 2pm
+        }
+    }
+    
+    // Monday to Friday (weekdays)
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        if (currentHour < 14) {
+            return now.add(1, 'day'); // Before 2pm
+        } else {
+            return now.add(2, 'day'); // After 2pm
+        }
+    }
+    
+    // Fallback (shouldn't reach here)
+    return now.add(2, 'day');
 }
 
 /**
@@ -73,13 +94,25 @@ export function shouldDisableDate(date) {
 export function getDateRestrictionMessage() {
     const now = dayjs();
     const currentHour = now.hour();
+    const dayOfWeek = now.day();
     const minDate = getMinimumSelectableDate();
+    const isToday_PublicHoliday = isPublicHoliday(now);
     
-    if (currentHour < 14) {
-        return `Orders placed before 2 PM can be delivered from ${minDate.format('DD MMM YYYY')} onwards.`;
-    } else {
-        return `Orders placed after 2 PM can be delivered from ${minDate.format('DD MMM YYYY')} onwards.`;
+    // Public Holiday or Sunday
+    if (dayOfWeek === 0 || isToday_PublicHoliday) {
+        const dayType = dayOfWeek === 0 ? 'Sunday' : 'Public Holiday';
+        return `Orders placed on ${dayType} can be delivered from ${minDate.format('DD MMM YYYY')} onwards.`;
     }
+    
+    // Saturday
+    if (dayOfWeek === 6) {
+        const timeRule = currentHour < 14 ? 'before 2 PM' : 'after 2 PM';
+        return `Orders placed on Saturday ${timeRule} can be delivered from ${minDate.format('DD MMM YYYY')} onwards.`;
+    }
+    
+    // Weekdays (Mon-Fri)
+    const timeRule = currentHour < 14 ? 'before 2 PM' : 'after 2 PM';
+    return `Orders placed on weekday ${timeRule} can be delivered from ${minDate.format('DD MMM YYYY')} onwards.`;
 }
 
 /**
@@ -109,6 +142,52 @@ export function validateSelectedDate(selectedDate) {
         isValid: true,
         message: ''
     };
+}
+
+/**
+ * Get delivery schedule info for debugging/display
+ * @returns {object} - Current delivery rules and timing
+ */
+export function getDeliveryScheduleInfo() {
+    const now = dayjs();
+    const currentHour = now.hour();
+    const dayOfWeek = now.day();
+    const minDate = getMinimumSelectableDate();
+    const isToday_PublicHoliday = isPublicHoliday(now);
+    
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    
+    return {
+        currentDay: dayNames[dayOfWeek],
+        currentTime: now.format('HH:mm'),
+        currentDate: now.format('DD MMM YYYY'),
+        isBeforeDeadline: currentHour < 14,
+        isPublicHoliday: isToday_PublicHoliday,
+        minimumDeliveryDate: minDate.format('DD MMM YYYY'),
+        daysFromNow: minDate.diff(now, 'day'),
+        rule: getRuleDescription()
+    };
+}
+
+/**
+ * Get description of current rule being applied
+ * @returns {string} - Rule description
+ */
+function getRuleDescription() {
+    const now = dayjs();
+    const currentHour = now.hour();
+    const dayOfWeek = now.day();
+    const isToday_PublicHoliday = isPublicHoliday(now);
+    
+    if (dayOfWeek === 0 || isToday_PublicHoliday) {
+        return dayOfWeek === 0 ? 'Sunday: +3 days' : 'Public Holiday: +3 days';
+    }
+    
+    if (dayOfWeek === 6) {
+        return currentHour < 14 ? 'Saturday before 2pm: +2 days' : 'Saturday after 2pm: +3 days';
+    }
+    
+    return currentHour < 14 ? 'Weekday before 2pm: +1 day' : 'Weekday after 2pm: +2 days';
 }
 
 /**

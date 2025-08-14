@@ -4,16 +4,19 @@ import { useCheckoutContext } from 'src/sections/checkout/context';
 import { CheckoutOrderComplete } from 'src/sections/checkout/checkout-order-complete';
 
 export default function CheckoutSuccessPage() {
-    const { onResetCart } = useCheckoutContext();
-    useEffect(() => {
-        onResetCart();
-    }, [onResetCart]);
+    // const { onResetCart } = useCheckoutContext();
+    // useEffect(() => {
+    //     onResetCart();
+    // }, [onResetCart]);
 
     return (
         <CheckoutOrderComplete
             open // ensures the Dialog is visible
-            onResetCart={onResetCart}
+            // onResetCart={onResetCart}
             onDownloadPDF={() => { /* implement PDF download if needed */ }}
         />
     );
 }
+
+// Force dynamic rendering to avoid serialization issues
+export const dynamic = 'force-dynamic';

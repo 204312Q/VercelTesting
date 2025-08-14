@@ -1,114 +1,182 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 
-export function ProductDeliveryForm({ onDeliveryDataChange, onValidationChange, orderTotal = 0 }) {
+export function ProductDeliveryForm({ onDeliveryDataChange, onValidationChange, orderTotal = 0, discountAmount = 0 }) {
     const [deliveryData, setDeliveryData] = useState({
-        // Personal Information
         fullName: '',
         phone: '',
         email: '',
-
-        // Address Information
         address: '',
         floor: '',
         unit: '',
         postalCode: '',
-
-        // Payment method
-        paymentMethod: 'full', // full, partial
+        paymentMethod: 'full',
     });
 
     const [errors, setErrors] = useState({});
     const [touchedFields, setTouchedFields] = useState({});
 
-    // Notify parent component when delivery data changes
-    useEffect(() => {
-        if (onDeliveryDataChange) {
-            onDeliveryDataChange(deliveryData);
+    // Validation rules
+    const validationRules = useMemo(() => ({
+        fullName: (value) => !value.trim() ? 'Full name is required' : null,
+        email: (value) => {
+            if (!value.trim()) return 'Email is required';
+            if (!/\S+@\S+\.\S+/.test(value)) return 'Email is invalid';
+            return null;
+        },
+        phone: (value) => !value.trim() ? 'Phone number is required' : null,
+        address: (value) => !value.trim() ? 'Address is required' : null,
+        postalCode: (value) => {
+            if (!value.trim()) return 'Postal code is required';
+            if (!/^\d{6}$/.test(value)) return 'Postal code must be 6 digits';
+            return null;
         }
-    }, [deliveryData, onDeliveryDataChange]);
+    }), []);
 
     // Handle input changes
     const handleInputChange = useCallback((field) => (e) => {
         const value = e.target.value;
-        setDeliveryData(prev => {
-            const newData = { ...prev, [field]: value };
-            return newData;
-        });
 
-        // Mark field as touched
+        setDeliveryData(prev => ({ ...prev, [field]: value }));
         setTouchedFields(prev => ({ ...prev, [field]: true }));
 
         // Clear error when user starts typing
         if (errors[field]) {
-            setErrors(prevErrors => {
-                const newErrors = { ...prevErrors };
+            setErrors(prev => {
+                const newErrors = { ...prev };
                 delete newErrors[field];
                 return newErrors;
             });
         }
     }, [errors]);
 
-    // Validation
+    // Handle payment method change
+    const handlePaymentMethodChange = useCallback((method) => {
+        setDeliveryData(prev => ({ ...prev, paymentMethod: method }));
+    }, []);
+
+    // Validation function
     const validateForm = useCallback(() => {
         const newErrors = {};
 
-        // Only show errors for fields that have been touched
-        if (touchedFields.fullName && !deliveryData.fullName.trim()) {
-            newErrors.fullName = 'Full name is required';
-        }
-        if (touchedFields.email) {
-            if (!deliveryData.email.trim()) {
-                newErrors.email = 'Email is required';
-            } else if (!/\S+@\S+\.\S+/.test(deliveryData.email)) {
-                newErrors.email = 'Email is invalid';
+        // Only show errors for touched fields
+        Object.keys(validationRules).forEach(field => {
+            if (touchedFields[field]) {
+                const error = validationRules[field](deliveryData[field]);
+                if (error) newErrors[field] = error;
             }
-        }
-        if (touchedFields.phone && !deliveryData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
-        }
-        if (touchedFields.address && !deliveryData.address.trim()) {
-            newErrors.address = 'Address is required';
-        }
-        if (touchedFields.postalCode) {
-            if (!deliveryData.postalCode.trim()) {
-                newErrors.postalCode = 'Postal code is required';
-            } else if (!/^\d{6}$/.test(deliveryData.postalCode)) {
-                newErrors.postalCode = 'Postal code must be 6 digits';
-            }
-        }
+        });
 
         setErrors(newErrors);
 
-        // For validation status, check all required fields regardless of touched state
-        const allFieldsValid = !!(
-            deliveryData.fullName.trim() &&
-            deliveryData.email.trim() &&
-            /\S+@\S+\.\S+/.test(deliveryData.email) &&
-            deliveryData.phone.trim() &&
-            deliveryData.address.trim() &&
-            deliveryData.postalCode.trim() &&
-            /^\d{6}$/.test(deliveryData.postalCode)
+        // Check if all required fields are valid (regardless of touched state)
+        const isFormValid = Object.keys(validationRules).every(field =>
+            !validationRules[field](deliveryData[field])
         );
 
-        // Notify parent component about validation status
         if (onValidationChange) {
-            onValidationChange(allFieldsValid);
+            onValidationChange(isFormValid);
         }
 
-        return allFieldsValid;
-    }, [deliveryData, touchedFields, onValidationChange]);
+        return isFormValid;
+    }, [deliveryData, touchedFields, validationRules, onValidationChange]);
 
-    // Run validation whenever delivery data changes
+    // Payment calculation
+    const paymentAmounts = useMemo(() => {
+        const finalTotal = Math.max(0, orderTotal - discountAmount);
+
+        if (deliveryData.paymentMethod === 'partial') {
+            const depositAmount = 100;
+            const balancePayable = Math.max(0, finalTotal - depositAmount);
+
+            return {
+                depositAmount,
+                balancePayable,
+                totalAmount: finalTotal
+            };
+        }
+
+        return {
+            depositAmount: 0,
+            balancePayable: 0,
+            totalAmount: finalTotal
+        };
+    }, [deliveryData.paymentMethod, orderTotal, discountAmount]);
+
+    // Notify parent of delivery data changes
+    useEffect(() => {
+        if (onDeliveryDataChange) {
+            onDeliveryDataChange({
+                ...deliveryData,
+                paymentAmounts
+            });
+        }
+    }, [deliveryData, paymentAmounts, onDeliveryDataChange]);
+
+    // Run validation when form data changes
     useEffect(() => {
         validateForm();
     }, [validateForm]);
+
+    // Check if partial payment is available
+    const isPartialPaymentAvailable = orderTotal >= 728;
+
+    // Form fields configuration
+    const formFields = useMemo(() => [
+        {
+            name: 'fullName',
+            label: 'Full name',
+            required: true,
+            placeholder: ''
+        },
+        {
+            name: 'phone',
+            label: 'Phone number',
+            required: true,
+            placeholder: 'e.g., 91234567'
+        },
+        {
+            name: 'email',
+            label: 'Email',
+            type: 'email',
+            required: true,
+            placeholder: ''
+        },
+        {
+            name: 'address',
+            label: 'Address',
+            required: true,
+            multiline: true,
+            rows: 2,
+            placeholder: 'Block, Street Name'
+        },
+        {
+            name: 'floor',
+            label: 'Floor',
+            required: false,
+            placeholder: 'e.g., 12',
+            width: 6
+        },
+        {
+            name: 'unit',
+            label: 'Unit',
+            required: false,
+            placeholder: 'e.g., 34',
+            width: 6
+        },
+        {
+            name: 'postalCode',
+            label: 'Postal Code',
+            required: true,
+            placeholder: 'e.g., 123456'
+        }
+    ], []);
 
     return (
         <Card sx={{
@@ -116,303 +184,175 @@ export function ProductDeliveryForm({ onDeliveryDataChange, onValidationChange, 
             borderTop: '5px solid #F27C96',
             borderRadius: '4px 4px 0 0',
         }}>
-            <Box
-                sx={[
-                    () => ({
-                        gap: 5,
-                        p: { xs: 3, md: 3 },
-                        display: 'grid',
-                        borderRadius: 2,
-                        gridTemplateColumns: { xs: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' },
-                    }),
-                ]}
-            >
-                {/* Delivery Address Component */}
-                <div>
-                    <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
-                        Delivery Address*
-                    </Typography>
+            <Box sx={{
+                gap: 5,
+                p: { xs: 3, md: 3 },
+                display: 'grid',
+                borderRadius: 2,
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' },
+            }}>
+                {/* Delivery Address Section */}
+                <DeliveryAddressSection
+                    formFields={formFields}
+                    deliveryData={deliveryData}
+                    errors={errors}
+                    onInputChange={handleInputChange}
+                />
 
-                    <Grid container spacing={0}>
-                        <Grid item xs={12} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Full name"
-                                required
-                                value={deliveryData.fullName}
-                                onChange={handleInputChange('fullName')}
-                                error={!!errors.fullName}
-                                helperText={errors.fullName}
-                                size="medium"
-                                sx={{
-                                    margin: '4px 0',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Phone number"
-                                required
-                                value={deliveryData.phone}
-                                onChange={handleInputChange('phone')}
-                                error={!!errors.phone}
-                                helperText={errors.phone}
-                                size="medium"
-                                placeholder="e.g., 91234567"
-                                sx={{
-                                    margin: '4px 0',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Email"
-                                type="email"
-                                required
-                                value={deliveryData.email}
-                                onChange={handleInputChange('email')}
-                                error={!!errors.email}
-                                helperText={errors.email}
-                                size="medium"
-                                sx={{
-                                    margin: '4px 0',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Address"
-                                required
-                                multiline
-                                rows={2}
-                                value={deliveryData.address}
-                                onChange={handleInputChange('address')}
-                                error={!!errors.address}
-                                helperText={errors.address}
-                                size="medium"
-                                placeholder="Block, Street Name"
-                                sx={{
-                                    margin: '4px 0',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Floor"
-                                value={deliveryData.floor}
-                                onChange={handleInputChange('floor')}
-                                size="medium"
-                                placeholder="e.g., 12"
-                                sx={{
-                                    margin: '4px 0',
-                                    marginRight: '4px',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Unit"
-                                value={deliveryData.unit}
-                                onChange={handleInputChange('unit')}
-                                size="medium"
-                                placeholder="e.g., 34"
-                                sx={{
-                                    margin: '4px 0',
-                                    marginLeft: '4px',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sx={{ padding: '0 !important', margin: '0 !important' }}>
-                            <TextField
-                                fullWidth
-                                label="Postal Code"
-                                required
-                                value={deliveryData.postalCode}
-                                onChange={handleInputChange('postalCode')}
-                                error={!!errors.postalCode}
-                                helperText={errors.postalCode}
-                                size="medium"
-                                placeholder="e.g., 123456"
-                                sx={{
-                                    margin: '4px 0',
-                                    '& .MuiOutlinedInput-root': {
-                                        paddingLeft: '0 !important',
-                                    },
-                                    '& .MuiInputBase-input': {
-                                        paddingLeft: '14px !important',
-                                    }
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
-                </div>
-
-                {/* Payment Method Component */}
-                <div>
-                    <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
-                        Payment method
-                    </Typography>
-
-                    <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-                        {/* Full Payment Option */}
-                        <Box
-                            sx={[
-                                (theme) => ({
-                                    borderRadius: 1.5,
-                                    border: `solid 1px ${deliveryData.paymentMethod === 'full' ? theme.vars.palette.primary.main : theme.vars.palette.grey[300]}`,
-                                    transition: theme.transitions.create(['box-shadow'], {
-                                        easing: theme.transitions.easing.sharp,
-                                        duration: theme.transitions.duration.shortest,
-                                    }),
-                                    ...(deliveryData.paymentMethod === 'full' && {
-                                        boxShadow: `0 0 0 2px ${theme.vars.palette.primary.main}`
-                                    }),
-                                }),
-                            ]}
-                            onClick={() => setDeliveryData(prev => ({ ...prev, paymentMethod: 'full' }))}
-                        >
-                            <Box
-                                sx={{
-                                    px: 2,
-                                    gap: 2,
-                                    height: 80,
-                                    display: 'flex',
-                                    cursor: 'pointer',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        width: 20,
-                                        height: 20,
-                                        borderRadius: '50%',
-                                        border: '2px solid',
-                                        borderColor: deliveryData.paymentMethod === 'full' ? 'primary.main' : 'grey.400',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    {deliveryData.paymentMethod === 'full' && (
-                                        <Box
-                                            sx={{
-                                                width: 10,
-                                                height: 10,
-                                                borderRadius: '50%',
-                                                backgroundColor: 'primary.main',
-                                            }}
-                                        />
-                                    )}
-                                </Box>
-
-                                <Box component="span" sx={{ typography: 'subtitle1', flexGrow: 1 }}>
-                                    Full
-                                </Box>
-                            </Box>
-                        </Box>
-
-                        {/* Partial Payment Option - Show only if order total is more than $1000 */}
-                        {orderTotal > 1000 && (
-                            <Box
-                                sx={[
-                                    (theme) => ({
-                                        borderRadius: 1.5,
-                                        border: `solid 1px ${deliveryData.paymentMethod === 'partial' ? theme.vars.palette.primary.main : theme.vars.palette.grey[300]}`,
-                                        transition: theme.transitions.create(['box-shadow'], {
-                                            easing: theme.transitions.easing.sharp,
-                                            duration: theme.transitions.duration.shortest,
-                                        }),
-                                        ...(deliveryData.paymentMethod === 'partial' && {
-                                            boxShadow: `0 0 0 2px ${theme.vars.palette.primary.main}`
-                                        }),
-                                    }),
-                                ]}
-                                onClick={() => setDeliveryData(prev => ({ ...prev, paymentMethod: 'partial' }))}
-                            >
-                                <Box
-                                    sx={{
-                                        px: 2,
-                                        gap: 2,
-                                        height: 80,
-                                        display: 'flex',
-                                        cursor: 'pointer',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            width: 20,
-                                            height: 20,
-                                            borderRadius: '50%',
-                                            border: '2px solid',
-                                            borderColor: deliveryData.paymentMethod === 'partial' ? 'primary.main' : 'grey.400',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    >
-                                        {deliveryData.paymentMethod === 'partial' && (
-                                            <Box
-                                                sx={{
-                                                    width: 10,
-                                                    height: 10,
-                                                    borderRadius: '50%',
-                                                    backgroundColor: 'primary.main',
-                                                }}
-                                            />
-                                        )}
-                                    </Box>
-
-                                    <Box component="span" sx={{ typography: 'subtitle1', flexGrow: 1 }}>
-                                        Partial (Deposit)
-                                    </Box>
-                                </Box>
-                            </Box>
-                        )}
-                    </Box>
-                </div>
+                {/* Payment Method Section */}
+                <PaymentMethodSection
+                    paymentMethod={deliveryData.paymentMethod}
+                    paymentAmounts={paymentAmounts}
+                    isPartialPaymentAvailable={isPartialPaymentAvailable}
+                    onPaymentMethodChange={handlePaymentMethodChange}
+                />
             </Box>
         </Card>
     );
 }
+
+// Delivery Address Section Component
+const DeliveryAddressSection = ({ formFields, deliveryData, errors, onInputChange }) => (
+    <div>
+        <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+            Delivery Address*
+        </Typography>
+
+        <Grid container spacing={0}>
+            {formFields.map((field) => (
+                <Grid
+                    key={field.name}
+                    item
+                    xs={field.width || 12}
+                    sx={{ padding: '0 !important', margin: '0 !important' }}
+                >
+                    <TextField
+                        fullWidth
+                        label={field.label}
+                        type={field.type || 'text'}
+                        required={field.required}
+                        multiline={field.multiline}
+                        rows={field.rows}
+                        value={deliveryData[field.name]}
+                        onChange={onInputChange(field.name)}
+                        error={!!errors[field.name]}
+                        helperText={errors[field.name]}
+                        placeholder={field.placeholder}
+                        size="medium"
+                        sx={{
+                            margin: '4px 0',
+                            ...(field.width === 6 && field.name === 'floor' && { marginRight: '4px' }),
+                            ...(field.width === 6 && field.name === 'unit' && { marginLeft: '4px' }),
+                            '& .MuiOutlinedInput-root': {
+                                paddingLeft: '0 !important',
+                            },
+                            '& .MuiInputBase-input': {
+                                paddingLeft: '14px !important',
+                            }
+                        }}
+                    />
+                </Grid>
+            ))}
+        </Grid>
+    </div>
+);
+
+// Payment Method Section Component
+const PaymentMethodSection = ({
+    paymentMethod,
+    paymentAmounts,
+    isPartialPaymentAvailable,
+    onPaymentMethodChange
+}) => (
+    <div>
+        <Typography variant="h6" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
+            Payment method
+        </Typography>
+
+        <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+            {/* Full Payment Option */}
+            <PaymentOption
+                isSelected={paymentMethod === 'full'}
+                onClick={() => onPaymentMethodChange('full')}
+                title="Full"
+                description=""
+            />
+
+            {/* Partial Payment Option */}
+            {isPartialPaymentAvailable && (
+                <PaymentOption
+                    isSelected={paymentMethod === 'partial'}
+                    onClick={() => onPaymentMethodChange('partial')}
+                    title="Partial (Deposit)"
+                    description={`Pay $${paymentAmounts.depositAmount} now, balance $${paymentAmounts.balancePayable.toFixed(2)} pay later`}
+                />
+            )}
+        </Box>
+    </div>
+);
+
+// Payment Option Component
+const PaymentOption = ({ isSelected, onClick, title, description }) => (
+    <Box
+        sx={[
+            (theme) => ({
+                borderRadius: 1.5,
+                border: `solid 1px ${isSelected ? theme.vars.palette.primary.main : theme.vars.palette.grey[300]}`,
+                transition: theme.transitions.create(['box-shadow'], {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.shortest,
+                }),
+                cursor: 'pointer',
+                ...(isSelected && {
+                    boxShadow: `0 0 0 2px ${theme.vars.palette.primary.main}`
+                }),
+            }),
+        ]}
+        onClick={onClick}
+    >
+        <Box sx={{
+            px: 2,
+            gap: 2,
+            height: 80,
+            display: 'flex',
+            alignItems: 'center',
+        }}>
+            <Box sx={{
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                border: '2px solid',
+                borderColor: isSelected ? 'primary.main' : 'grey.400',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
+                {isSelected && (
+                    <Box sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: '50%',
+                        backgroundColor: 'primary.main',
+                    }} />
+                )}
+            </Box>
+
+            <Box sx={{ flexGrow: 1 }}>
+                <Box component="span" sx={{
+                    typography: 'subtitle1',
+                    display: 'block'
+                }}>
+                    {title}
+                </Box>
+                {description && (
+                    <Box component="span" sx={{
+                        typography: 'caption',
+                        color: 'text.secondary'
+                    }}>
+                        {description}
+                    </Box>
+                )}
+            </Box>
+        </Box>
+    </Box>
+);

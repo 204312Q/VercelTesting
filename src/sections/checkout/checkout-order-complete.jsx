@@ -1,11 +1,9 @@
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
-import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { OrderCompleteIllustration } from 'src/assets/illustrations';
@@ -45,10 +43,8 @@ export function CheckoutOrderComplete({ onResetCart, onDownloadPDF, ...other }) 
         <OrderCompleteIllustration />
 
         <Typography>
-          Thanks for placing order
-          <br />
-          <br /> If you have any question or queries then fell to get in contact us. <br />
-          All the best,
+          An email confirmation will be sent to you once your order is processed.
+          <br /> Please check your email for any updates.
         </Typography>
 
         <Divider sx={{ width: 1, borderStyle: 'dashed' }} />
@@ -63,23 +59,14 @@ export function CheckoutOrderComplete({ onResetCart, onDownloadPDF, ...other }) 
         >
           <Button
             component={RouterLink}
-            href={paths.product.root}
+            href="/"
             size="large"
             color="inherit"
             variant="outlined"
             onClick={onResetCart}
             startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
           >
-            Continue shopping
-          </Button>
-
-          <Button
-            size="large"
-            variant="contained"
-            startIcon={<Iconify icon="eva:cloud-download-fill" />}
-            onClick={onDownloadPDF}
-          >
-            Download as PDF
+            Go to Home
           </Button>
         </Box>
       </Box>

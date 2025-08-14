@@ -9,7 +9,7 @@ export const PROMO_CODES = [
             maxDiscountAmount: 0,
             applicableProducts: [1, 2, 3, 5], // Empty = all products
             applicableCategories: [],
-            excludesBundles: false,
+            excludesBundles: true,
             validFrom: "2024-01-01",
             validUntil: "2025-12-31"
         }

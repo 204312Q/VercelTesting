@@ -4,12 +4,12 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { ProductList } from '../product-list';
-import { useProductOrderContext } from '../context';
+// import { useProductOrderContext } from '../context'; // Removed
 
 // ----------------------------------------------------------------------
 
 export function ProductShopView({ packages, addons }) {
-  const { onProceedToOrder } = useProductOrderContext();
+  // Removed ProductOrderContext dependency since we're handling checkout directly via Stripe
 
   const productItems = packages || [];
   const addonItems = addons || [];
@@ -27,7 +27,7 @@ export function ProductShopView({ packages, addons }) {
         Our Packages
       </Typography>
 
-      <ProductList packages={productItems} addons={addonItems} onProceedToOrder={onProceedToOrder} />
+      <ProductList packages={productItems} addons={addonItems} />
 
     </Container>
   );

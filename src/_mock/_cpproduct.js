@@ -177,7 +177,7 @@ export const PRODUCT =
       name: "BMB Massage Package",
       description: "Basic massage package only for 28 day package",
       type: "bundle", 
-      price: 1500.00,
+      price: 1500.60,
       bundled_to: 1,
     },
     {

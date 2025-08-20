@@ -9,3 +9,6 @@ export const metadata = { title: `Create a new product | Dashboard - ${CONFIG.ap
 export default function Page() {
   return <ProductCreateView />;
 }
+
+// Force dynamic rendering to avoid serialization issues
+export const dynamic = 'force-dynamic';

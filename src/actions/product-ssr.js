@@ -9,10 +9,11 @@ export async function getProducts() {
     const products = await import('src/_mock/_cpproduct.js');
     const allProducts = products.PRODUCT;
 
-    // Filter only products with type "package"
+    // Filter only products with type "package" and ensure they're serializable
     const packageProducts = allProducts.filter(product => product.type === 'package');
 
-    return packageProducts;
+    // Return serializable plain objects
+    return JSON.parse(JSON.stringify(packageProducts));
   } catch (error) {
     console.error('getProducts - Error:', error);
     return [];
@@ -32,7 +33,8 @@ export async function getProduct(id) {
       (product) => (product.product_id == id || product.id == id) && product.type === 'package'
     )
     
-    return { product: res }; // Wrap it for destructuring
+    // Return serializable plain object
+    return { product: res ? JSON.parse(JSON.stringify(res)) : null };
   } catch (error) {
     console.error('getProduct - Error:', error);
     return { product: null };
@@ -47,10 +49,11 @@ export async function getAddons() {
     const products = await import('src/_mock/_cpproduct.js');
     const allProducts = products.PRODUCT;
     
-    // Filter only products with type "addOn"
+    // Filter only products with type "addOn" and ensure they're serializable
     const addonProducts = allProducts.filter(product => product.type === 'addOn');
   
-    return addonProducts;
+    // Return serializable plain objects
+    return JSON.parse(JSON.stringify(addonProducts));
   } catch (error) {
     console.error('getAddons - Error:', error);
     return [];
@@ -89,7 +92,8 @@ export async function getBundlesForProduct(productId) {
              product.bundled_to === parseInt(productId);
     });
     
-    return bundleProducts;
+    // Return serializable plain objects
+    return JSON.parse(JSON.stringify(bundleProducts));
   } catch (error) {
     console.error('getBundlesForProduct - Error:', error);
     return [];

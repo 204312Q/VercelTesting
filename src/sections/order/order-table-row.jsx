@@ -1,18 +1,10 @@
-import { useBoolean, usePopover } from 'minimal-shared/hooks';
-
+import { memo } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import MenuList from '@mui/material/MenuList';
-import Collapse from '@mui/material/Collapse';
-import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
-import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 
 import { RouterLink } from 'src/routes/components';
@@ -21,188 +13,205 @@ import { fCurrency } from 'src/utils/format-number';
 import { fDate, fTime } from 'src/utils/format-time';
 
 import { Label } from 'src/components/label';
-import { Iconify } from 'src/components/iconify';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { CustomPopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
+// CONSTANTS - Status color mappings for consistent styling
+// ----------------------------------------------------------------------
 
-export function OrderTableRow({ row, selected, onSelectRow, onDeleteRow, detailsHref }) {
-  const confirmDialog = useBoolean();
-  const menuActions = usePopover();
-  const collapseRow = useBoolean();
+/**
+ * Payment status to color mapping for Label component
+ * Backend should ensure payment_status values match these keys
+ */
+const PAYMENT_STATUS_COLORS = {
+  'paid': 'success',
+  'Partial': 'info',
+  'Pending': 'warning',
+  'Full Refund': 'default',
+  'Partial Refund': 'default',
+};
 
-  const renderPrimaryRow = () => (
+/**
+ * Order status to color mapping for Label component
+ * Backend should ensure order_status values match these keys
+ */
+const ORDER_STATUS_COLORS = {
+  'fulfilled': 'success',
+  'unfulfilled': 'warning',
+  'cancelled': 'error',
+};
+
+// ----------------------------------------------------------------------
+// COMPONENT
+// ----------------------------------------------------------------------
+
+/**
+ * OrderTableRow Component
+ * 
+ * Renders a single order row in the orders table
+ * Optimized with React.memo to prevent unnecessary re-renders
+ * 
+ * Props:
+ * @param {Object} row - Order data object from API
+ * @param {boolean} selected - Whether this row is selected
+ * @param {Function} onSelectRow - Callback when checkbox is clicked
+ * @param {string} detailsHref - URL for order details page
+ * 
+ * Expected row object structure (from API):
+ * {
+ *   order_id: string,           // Unique order identifier
+ *   orderNumber: string,        // Display order number (e.g., "#60115")
+ *   customer_name: string,      // Customer full name
+ *   email: string,              // Customer email address
+ *   payment_status: string,     // One of: 'paid', 'Partial', 'Pending', 'Full Refund', 'Partial Refund'
+ *   order_date: string,         // ISO date string
+ *   start_type: string,         // Order type (e.g., 'Lunch', 'Dinner')
+ *   items_count: number,        // Number of items in order
+ *   final_amount: number,       // Total order amount
+ *   order_status: string        // One of: 'fulfilled', 'unfulfilled', 'cancelled'
+ * }
+ */
+function OrderTableRowComponent({ row, selected, onSelectRow, detailsHref }) {
+  /**
+   * Get color for payment status label
+   * Falls back to 'default' if status not found in mapping
+   */
+  const getPaymentStatusColor = () =>
+    PAYMENT_STATUS_COLORS[row.payment_status] || 'default';
+
+  /**
+   * Get color for order status label
+   * Falls back to 'default' if status not found in mapping
+   */
+  const getOrderStatusColor = () =>
+    ORDER_STATUS_COLORS[row.order_status] || 'default';
+
+  return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
+      {/* Selection Checkbox - Fixed width for consistent alignment */}
+      <TableCell padding="checkbox" sx={{ width: 48 }}>
         <Checkbox
           checked={selected}
           onClick={onSelectRow}
           inputProps={{
-            id: `${row.id}-checkbox`,
-            'aria-label': `${row.id} checkbox`,
+            id: `${row.order_id}-checkbox`,
+            'aria-label': `${row.order_id} checkbox`,
           }}
         />
       </TableCell>
 
-      <TableCell>
-        <Link component={RouterLink} href={detailsHref} color="inherit" underline="always">
+      {/* Order ID Column - Clickable link to order details */}
+      <TableCell sx={{ width: 120 }}>
+        <Link
+          component={RouterLink}
+          href={detailsHref}
+          color="inherit"
+          underline="always"
+          sx={{ fontWeight: 500 }}
+        >
           {row.orderNumber}
         </Link>
       </TableCell>
 
-      <TableCell>
-        <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={row.customer.name} src={row.customer.avatarUrl} />
-
-          <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
-            <Box component="span">{row.customer.name}</Box>
-
-            <Box component="span" sx={{ color: 'text.disabled' }}>
-              {row.customer.email}
-            </Box>
-          </Stack>
-        </Box>
+      {/* Customer Information Column - Name and email with text overflow handling */}
+      <TableCell sx={{ width: 280 }}>
+        <Stack sx={{ typography: 'body2', alignItems: 'flex-start' }}>
+          {/* Customer Name */}
+          <Box
+            component="span"
+            sx={{
+              fontWeight: 500,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+            title={row.customer_name} // Tooltip for full name on hover
+          >
+            {row.customer_name}
+          </Box>
+          {/* Customer Email */}
+          <Box
+            component="span"
+            sx={{
+              color: 'text.disabled',
+              fontSize: '0.875rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+            title={row.email} // Tooltip for full email on hover
+          >
+            {row.email}
+          </Box>
+        </Stack>
       </TableCell>
 
-      <TableCell>
-        <ListItemText
-          primary={fDate(row.createdAt)}
-          secondary={fTime(row.createdAt)}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{ mt: 0.5, component: 'span', typography: 'caption' }}
-        />
-      </TableCell>
-
-      <TableCell align="center"> {row.totalQuantity} </TableCell>
-
-      <TableCell> {fCurrency(row.subtotal)} </TableCell>
-
-      <TableCell>
+      {/* Payment Status Column - Colored label indicating payment state */}
+      <TableCell sx={{ width: 140 }}>
         <Label
           variant="soft"
-          color={
-            (row.status === 'completed' && 'success') ||
-            (row.status === 'pending' && 'warning') ||
-            (row.status === 'cancelled' && 'error') ||
-            'default'
-          }
+          color={getPaymentStatusColor()}
         >
-          {row.status}
+          {row.payment_status}
         </Label>
       </TableCell>
 
-      <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-        <IconButton
-          color={collapseRow.value ? 'inherit' : 'default'}
-          onClick={collapseRow.onToggle}
-          sx={{ ...(collapseRow.value && { bgcolor: 'action.hover' }) }}
-        >
-          <Iconify icon="eva:arrow-ios-downward-fill" />
-        </IconButton>
-
-        <IconButton color={menuActions.open ? 'inherit' : 'default'} onClick={menuActions.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  );
-
-  const renderSecondaryRow = () => (
-    <TableRow>
-      <TableCell sx={{ p: 0, border: 'none' }} colSpan={8}>
-        <Collapse
-          in={collapseRow.value}
-          timeout="auto"
-          unmountOnExit
-          sx={{ bgcolor: 'background.neutral' }}
-        >
-          <Paper sx={{ m: 1.5 }}>
-            {row.items.map((item) => (
-              <Box
-                key={item.id}
-                sx={(theme) => ({
-                  display: 'flex',
-                  alignItems: 'center',
-                  p: theme.spacing(1.5, 2, 1.5, 1.5),
-                  '&:not(:last-of-type)': {
-                    borderBottom: `solid 2px ${theme.vars.palette.background.neutral}`,
-                  },
-                })}
-              >
-                <Avatar
-                  src={item.coverUrl}
-                  variant="rounded"
-                  sx={{ width: 48, height: 48, mr: 2 }}
-                />
-
-                <ListItemText
-                  primary={item.name}
-                  secondary={item.sku}
-                  primaryTypographyProps={{ typography: 'body2' }}
-                  secondaryTypographyProps={{ component: 'span', color: 'text.disabled', mt: 0.5 }}
-                />
-
-                <div>x{item.quantity} </div>
-
-                <Box sx={{ width: 110, textAlign: 'right' }}>{fCurrency(item.price)}</Box>
-              </Box>
-            ))}
-          </Paper>
-        </Collapse>
-      </TableCell>
-    </TableRow>
-  );
-
-  const renderMenuActions = () => (
-    <CustomPopover
-      open={menuActions.open}
-      anchorEl={menuActions.anchorEl}
-      onClose={menuActions.onClose}
-      slotProps={{ arrow: { placement: 'right-top' } }}
-    >
-      <MenuList>
-        <MenuItem
-          onClick={() => {
-            confirmDialog.onTrue();
-            menuActions.onClose();
+      {/* Order Date Column - Date and meal type */}
+      <TableCell sx={{ width: 140 }}>
+        <ListItemText
+          primary={fDate(row.order_date)}
+          secondary={row.start_type || 'Lunch'} // Default to 'Lunch' if not provided
+          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+          secondaryTypographyProps={{
+            mt: 0.5,
+            component: 'span',
+            typography: 'caption',
+            color: 'text.secondary'
           }}
-          sx={{ color: 'error.main' }}
+        />
+      </TableCell>
+
+      {/* Items Count Column - Center aligned number */}
+      <TableCell align="center" sx={{ width: 80 }}>
+        <Box sx={{ fontWeight: 500 }}>
+          {row.items_count}
+        </Box>
+      </TableCell>
+
+      {/* Total Amount Column - Formatted currency */}
+      <TableCell sx={{ width: 120 }}>
+        <Box sx={{ fontWeight: 500 }}>
+          {fCurrency(row.final_amount)}
+        </Box>
+      </TableCell>
+
+      {/* Order Status Column - Colored label indicating fulfillment state */}
+      <TableCell sx={{ width: 120 }}>
+        <Label
+          variant="soft"
+          color={getOrderStatusColor()}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
+          {row.order_status}
+        </Label>
+      </TableCell>
 
-        <li>
-          <MenuItem component={RouterLink} href={detailsHref} onClick={() => menuActions.onClose()}>
-            <Iconify icon="solar:eye-bold" />
-            View
-          </MenuItem>
-        </li>
-      </MenuList>
-    </CustomPopover>
-  );
-
-  const renderConfrimDialog = () => (
-    <ConfirmDialog
-      open={confirmDialog.value}
-      onClose={confirmDialog.onFalse}
-      title="Delete"
-      content="Are you sure want to delete?"
-      action={
-        <Button variant="contained" color="error" onClick={onDeleteRow}>
-          Delete
-        </Button>
-      }
-    />
-  );
-
-  return (
-    <>
-      {renderPrimaryRow()}
-      {renderSecondaryRow()}
-      {renderMenuActions()}
-      {renderConfrimDialog()}
-    </>
+      {/* Actions Column - Reserved for future actions (edit, delete, etc.) */}
+      <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap', width: 88 }}>
+        {/* TODO: Add action buttons here (edit, delete, view details) */}
+        {/* Example:
+        <IconButton size="small" onClick={() => onEdit(row.order_id)}>
+          <Iconify icon="eva:edit-fill" />
+        </IconButton>
+        */}
+      </TableCell>
+    </TableRow>
   );
 }
+
+/**
+ * Memoized component to prevent unnecessary re-renders
+ * Will only re-render if props actually change
+ * This is especially important in large tables with many rows
+ */
+export const OrderTableRow = memo(OrderTableRowComponent);

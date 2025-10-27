@@ -1,4 +1,4 @@
-import { CONFIG } from 'src/global-config';
+// import { CONFIG } from 'src/global-config';
 
 // import { PaymentView } from 'src/sections/payment/view';
 

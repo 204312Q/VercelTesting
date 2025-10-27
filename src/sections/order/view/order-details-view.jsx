@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 
 import { paths } from 'src/routes/paths';
 
-import { ORDER_STATUS_OPTIONS } from 'src/_mock/_order';
+import { ORDER_STATUS_OPTIONS } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { OrderDetailsItems } from '../order-details-item';

@@ -12,7 +12,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 
 import { Nav, NavUl } from '../components';
 import { NavList } from './nav-mobile-list';
-import { SignInButton } from '../../../components/sign-in-button';
+// import { SignInButton } from '../../../components/sign-in-button';
 
 // ----------------------------------------------------------------------
 

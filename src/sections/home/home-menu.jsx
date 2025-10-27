@@ -1,8 +1,11 @@
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { CONFIG } from 'src/global-config';
+
 import { paths } from 'src/routes/paths';
+
+import { CONFIG } from 'src/global-config';
+
 
 export function HomeMenu({ sx, ...other }) {
   return (

@@ -1,7 +1,7 @@
 'use client';
 
-import { useLocalStorage } from 'minimal-shared/hooks';
 import { useMemo, useCallback } from 'react';
+import { useLocalStorage } from 'minimal-shared/hooks';
 
 import { useRouter } from 'src/routes/hooks';
 
@@ -21,7 +21,7 @@ const initialState = {
 export function ProductOrderProvider({ children }) {
     const router = useRouter();
 
-    const { state, setState, setField, resetState } = useLocalStorage(
+    const { state, setState, resetState } = useLocalStorage(
         PRODUCT_ORDER_STORAGE_KEY,
         initialState,
         { initializeWithValue: false }
@@ -112,44 +112,28 @@ export function ProductOrderProvider({ children }) {
     }, [setState, router]);
 
     // Get current order from local storage
-    const getCurrentOrder = useCallback(() => {
-        return state.order;
-    }, [state.order]);
+    const getCurrentOrder = useCallback(() => state.order, [state.order]);
 
     // Get order timestamp
-    const getOrderTimestamp = useCallback(() => {
-        return state.timestamp;
-    }, [state.timestamp]);
+    const getOrderTimestamp = useCallback(() => state.timestamp, [state.timestamp]);
 
     // Check if there's a saved order
-    const hasSavedOrder = useCallback(() => {
-        return !!state.order;
-    }, [state.order]);
+    const hasSavedOrder = useCallback(() => !!state.order, [state.order]);
 
     // Get applied promo code information
-    const getAppliedPromoCode = useCallback(() => {
-        return state.order?.promoCode || null;
-    }, [state.order]);
+    const getAppliedPromoCode = useCallback(() => state.order?.promoCode || null, [state.order]);
 
     // Get selected bundle information
-    const getSelectedBundle = useCallback(() => {
-        return state.order?.bundle || null;
-    }, [state.order]);
+    const getSelectedBundle = useCallback(() => state.order?.bundle || null, [state.order]);
 
     // Check if promo code was used
-    const hasPromoCode = useCallback(() => {
-        return !!state.order?.promoCode;
-    }, [state.order]);
+    const hasPromoCode = useCallback(() => !!state.order?.promoCode, [state.order]);
 
     // Check if bundle was selected
-    const hasBundle = useCallback(() => {
-        return !!state.order?.bundle;
-    }, [state.order]);
+    const hasBundle = useCallback(() => !!state.order?.bundle, [state.order]);
 
     // Clear saved order
-    const clearOrder = useCallback(() => {
-        resetState(initialState);
-    }, [resetState]);
+    const clearOrder = useCallback(() => resetState(initialState), [resetState]);
 
     // Update order (useful for partial updates)
     const updateOrder = useCallback((orderUpdates) => {

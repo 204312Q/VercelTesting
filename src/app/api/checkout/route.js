@@ -1,160 +1,149 @@
-import { NextResponse } from "next/server";
-const stripe = require('stripe')(process.env.NEXT_STRIPE_SECRET_KEY);
+// src/app/api/checkout/route.js
+export const runtime = 'nodejs';
 
-export const POST = async (request) => {
+import Stripe from 'stripe';
+import { NextResponse } from 'next/server';
+
+import { prisma } from 'src/server/db';
+
+// Helpers
+const round2 = (n) => Math.round(n * 100) / 100;
+const GST_RATE_PCT = Number.isFinite(Number(process.env.GST_RATE_PCT))
+  ? Number(process.env.GST_RATE_PCT)
+  : 9;
+const extractInclusiveTax = (totalIncl, ratePct) =>
+  round2(totalIncl * (ratePct / (100 + ratePct))); // e.g. 9/109
+
+export const POST = async (req) => {
   try {
-    // 1. Parse body - now includes full order details
-    const { products, orderDetails, paymentType } = await request.json();
+    // --- Stripe client ---
+    const SECRET = process.env.STRIPE_SECRET_KEY || process.env.NEXT_STRIPE_SECRET_KEY;
+    if (!SECRET) {
+      return NextResponse.json(
+        { error: 'Missing STRIPE_SECRET_KEY in environment' },
+        { status: 500 },
+      );
+    }
+    const stripe = new Stripe(SECRET, { apiVersion: '2024-06-20' });
 
-    // 2. Check if this is a partial payment
-    const isPartialPayment = paymentType === 'partial';
-    const depositAmount = orderDetails?.deliveryInfo?.paymentAmounts?.depositAmount || 100;
-    const totalAmount = orderDetails?.pricing?.total || 0;
-    const balancePayable = orderDetails?.deliveryInfo?.paymentAmounts?.balancePayable || 0;
+    // --- Input ---
+    const body = await req.json();
+    const orderId = Number(body.orderId);
+    const paymentType = String(body.paymentType || 'FULL').toUpperCase(); // 'PARTIAL' | 'FULL'
+    const isPartial = paymentType === 'PARTIAL';
+    if (!orderId) return NextResponse.json({ error: 'orderId required' }, { status: 400 });
 
-    // 3. Calculate discount amount for full orders
-    const discountAmount = orderDetails?.pricing?.totalDiscount || 
-                          orderDetails?.pricing?.promoDiscount || 
-                          (orderDetails?.pricing?.appliedPromo?.discountAmount) || 0;
-    
-    let stripeProducts = [];
-    
-    if (isPartialPayment) {
-      // For partial payment, create a single line item for the deposit only
-      stripeProducts.push({
-        price_data: {
-          currency: 'sgd',
-          product_data: {
-            name: `Deposit Payment - ${orderDetails?.category || 'Order'}`,
-            description: `Deposit payment for order (Balance: $${balancePayable.toFixed(2)} to be paid later)`,
-          },
-          unit_amount: Math.round(depositAmount * 100), // Convert to cents
+    // --- Load order from DB ---
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        product: true, // base product (Dual Meal)
+        productOption: true, // duration option (price)
+        items: {
+          // bundle + add-ons added to order
+          include: { product: true, option: true },
         },
-        quantity: 1,
-      });
-    } else {
-      // Full payment logic (your existing code)
-      if (discountAmount > 0) {
-        // Apply discount proportionally to each product using price_data
-        const originalTotal = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
-        const discountRatio = discountAmount / originalTotal;
-        
-        for (const product of products) {
-          const productDiscount = product.price * discountRatio;
-          const discountedPrice = Math.max(0, product.price - productDiscount);
-                 
-          stripeProducts.push({
-            price_data: {
-              currency: 'sgd',
-              product_data: {
-                name: product.name,
-              },
-              unit_amount: Math.round(discountedPrice * 100), // Convert to cents
-            },
-            quantity: product.quantity,
-          });
-        }
-        
-        // Add a line item showing the discount applied
-        if (orderDetails?.pricing?.appliedPromo) {
-          const promoCode = orderDetails.pricing.appliedPromo.promoCode?.code || 
-                           orderDetails.pricing.appliedPromo.code || 
-                           'DISCOUNT';
-          
-          stripeProducts.push({
-            price_data: {
-              currency: 'sgd',
-              product_data: {
-                name: `${orderDetails.pricing.appliedPromo.description || 'Discount Applied'} (${promoCode})`,
-                description: `Saved $${discountAmount.toFixed(2)}`,
-              },
-              unit_amount: 0, // $0 line item just to show the discount info
-            },
-            quantity: 1,
-          });
-        }
-      } else {
-        // No discount, use price_data for consistency
-        for (const product of products) {
-          stripeProducts.push({
-            price_data: {
-              currency: 'sgd',
-              product_data: {
-                name: product.name,
-              },
-              unit_amount: Math.round(product.price * 100), // Convert to cents
-            },
-            quantity: product.quantity,
-          });
-        }
-      }
+        delivery: true,
+      },
+    });
+    if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+
+    // --- Compute totals from DB ---
+    const base = Number(order.productOption?.price || 0);
+    const extras = (order.items || []).reduce((sum, item) => {
+      const qty = Number(item.quantity || 1); // Default quantity = 1
+      const price = Number(item.price || 0); // Chosen option already have price
+      return sum + price * qty;
+    }, 0);
+    const discount = Number(order.discount || 0); // 0 if none
+    const fullTotal = Math.max(0, base + extras - discount); // Already GST inclusive
+
+    // --- RULE: block partial when base package price < 728 ---
+    if (isPartial && base < 728) {
+      return NextResponse.json(
+        {
+          error: 'PARTIAL_NOT_ALLOWED',
+          reason: `Base package price (${base}) <= 728`,
+        },
+        { status: 400 },
+      );
     }
 
-    // 4. Create checkout session with COMPLETE order metadata
-    const origin = request.headers.get('origin') || 
-                   request.headers.get('host') && `https://${request.headers.get('host')}` ||
-                   'http://localhost:3032'; // fallback for development
-    
+    // --- GST calculation part---
+    const subtotalIncl = round2(base + extras);   // pre-discount, GST-incl (optional)
+    const totalIncl    = round2(fullTotal);       // post-discount, GST-incl
+    const gstAmount    = extractInclusiveTax(totalIncl, GST_RATE_PCT);
+
+    await prisma.order.update({
+      where: { id: order.id },
+        data: {
+          subtotal: subtotalIncl.toFixed(2),
+          discount: round2(discount).toFixed(2),
+          total: totalIncl.toFixed(2),
+          gst_amount: gstAmount.toFixed(2),
+        },
+    });
+
+    // --- Decide payable now ---
+    const depositAmount = 100;
+    const payable = isPartial ? Math.min(totalIncl, depositAmount) : totalIncl;
+    const purpose = isPartial ? 'DEPOSIT' : 'FULL';
+
+    // ✅ Create a pending payment row so the webhook can reconcile later
+    const payment = await prisma.payment.create({
+      data: {
+        order_id: order.id,
+        amount: payable, // store in your schema's units (likely dollars)
+        status: 'PENDING',
+        purpose, // 'DEPOSIT' | 'FULL'
+        method: 'STRIPE',  // webhook may override to PayNow if card is chosen
+      },
+    });
+
+    // --- Build ONE Stripe line item ---
+    const line_items = [
+      {
+        quantity: 1,
+        price_data: {
+          currency: 'sgd',
+          unit_amount: Math.round(payable * 100),
+          product_data: {
+            name: isPartial
+              ? `Deposit for Order #${order.id} – ${order.product?.name ?? 'Package'}`
+              : `Order #${order.id} – ${order.product?.name ?? 'Package'}`,
+          },
+        },
+      },
+    ];
+
+    const origin = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
+
     const session = await stripe.checkout.sessions.create({
-      line_items: stripeProducts,
       mode: 'payment',
+      line_items,
+      payment_method_types: ['card', 'paynow'],
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout/cancel`,
-      // Store COMPLETE order details regardless of payment type
+      client_reference_id: String(order.id),
       metadata: {
-        orderId: `order_${Date.now()}`,
-        paymentType: isPartialPayment ? 'partial' : 'full',
-        
-        // Payment information
-        depositPaid: isPartialPayment ? depositAmount.toString() : '0',
-        balanceRemaining: isPartialPayment ? balancePayable.toString() : '0',
-        orderTotal: totalAmount.toString(),
-        
-        // Customer information
-        customerName: orderDetails?.deliveryInfo?.fullName || '',
-        customerEmail: orderDetails?.deliveryInfo?.email || '',
-        customerPhone: orderDetails?.deliveryInfo?.phone || '',
-        
-        // Delivery information
-        deliveryAddress: JSON.stringify({
-          address: orderDetails?.deliveryInfo?.address || '',
-          floor: orderDetails?.deliveryInfo?.floor || '',
-          unit: orderDetails?.deliveryInfo?.unit || '',
-          postalCode: orderDetails?.deliveryInfo?.postalCode || '',
-        }),
-        deliveryDate: orderDetails?.selectedDate || '',
-        startWith: orderDetails?.startWith || '',
-        specialRequests: orderDetails?.specialRequests || '',
-        
-        // COMPLETE product information (stored regardless of payment type)
-        selectedBundles: JSON.stringify(orderDetails?.selectedBundles || []),
-        products: JSON.stringify(products || []),
-        addOns: JSON.stringify(orderDetails?.addOns || []),
-        
-        // COMPLETE pricing breakdown (stored regardless of payment type)
-        basePrice: orderDetails?.pricing?.basePrice?.toString() || '0',
-        bundlePrice: orderDetails?.pricing?.bundlePrice?.toString() || '0',
-        addOnTotal: orderDetails?.pricing?.addOnTotal?.toString() || '0',
-        subtotal: orderDetails?.pricing?.subtotal?.toString() || '0',
-        totalDiscount: orderDetails?.pricing?.totalDiscount?.toString() || '0',
-        gstAmount: orderDetails?.pricing?.gstAmount?.toString() || '0',
-        finalTotal: orderDetails?.pricing?.total?.toString() || '0',
-        
-        // Promo information
-        promoCode: orderDetails?.pricing?.appliedPromo?.promoCode?.code || '',
-        promoDescription: orderDetails?.pricing?.appliedPromo?.description || '',
-        promoDiscount: orderDetails?.pricing?.appliedPromo?.discountAmount?.toString() || '0',
-        
-        // Order configuration
-        category: orderDetails?.category || '',
-        dateType: orderDetails?.dateType || '',
+        orderId: String(order.id),
+        paymentId: String(payment.payment_id),
+        purpose,
+        paymentType,
+        fullTotal: String(fullTotal),
+        payableNow: String(payable),
       },
-      customer_email: orderDetails?.deliveryInfo?.email,
+    });
+
+    // ✅ Keep session id for webhook fallback
+    await prisma.payment.update({
+      where: { payment_id: payment.payment_id },
+      data: { stripe_session_id: session.id },
     });
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error("Error in /api/checkout:", error);
+    console.error('Error in /api/checkout:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 };

@@ -71,9 +71,7 @@ function OptionItem({ option, selected, sx, ...other }) {
     >
       <Iconify
         width={28}
-        icon={
-          'carbon:delivery'
-        }
+        icon="carbon:delivery"
       />
       <Box sx={{ flex: '1 1 auto' }}>
         <Box

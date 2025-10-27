@@ -1,0 +1,102 @@
+{
+  "order": 
+  {
+    "id": 1,
+    "createdAt": "2025-09-16T15:44:00.881Z",
+    "inputType": "CONFIRMED_DATE",
+    "serviceDate": "2025-10-08",
+    "portion": "TRIAL",
+    "session": "LUNCH",
+    "status": "UNFULFILLED",
+    "paymentPlan": "FULL",
+
+    "lineItems": [
+      {
+        "id": "pkg-9",
+        "kind": "PACKAGE",
+        "option": {
+          "label": "1 Days",
+          "value": 1
+        },
+        "quantity": 1,
+        "productId": 3,
+        "productName": "Trial Meal",
+        "lineTotalCents": 3800,
+        "unitPriceCents": 3800
+      }
+    ],
+
+    "requests": [
+      {
+        "id": 1,
+        "code": "No Pig Trotter",
+        "label": "Pig Trotter",
+        "value": true,
+        "specialRequestId": 2
+      },
+      {
+        "id": 2,
+        "code": "No Fish",
+        "label": "Fish",
+        "value": true,
+        "specialRequestId": 4
+      }
+    ],
+    "note": "Notes AAAA",
+
+    "payments": [{
+        "id": 1,
+        "kind": "CHARGE",
+        "purpose": "FULL",
+        "method": "PAYNOW",
+        "status": "PAID",
+        "amountCents": 3610,
+        "createdAt": "2025-09-16T15:44:15.035Z",
+        "paidAt": "2025-09-16T15:44:43.930Z",
+        "stripe": {
+          "paymentIntentId": "pi_3S813PBHq4rDmyO70mdesZiz",
+          "checkoutSessionId": "cs_test_a1vI9YhOIL8vUQXjD90lcCs8n1bvmP7QaFA66eCKztG7xbfElbNerILvuI"
+        }   
+      }],
+
+    "pricing": {
+      "currency": "SGD",
+      "subtotalCents": 3800,
+      "paidCents": 3610,
+      "totalCents": 3610,
+      "remainingCents": 0,
+      "discounts": [{
+          "code": "EB5",
+          "type": "PERCENT",
+          "value": 5,
+          "amountCents": 190
+        }]
+      },
+    
+      "promotions": [
+      {
+        "code": "EB5",
+        "type": "PERCENT",
+        "value": 5,
+        "amountCents": 190
+      }
+    ],
+  
+    "delivery":{
+      "unit": "12",
+      "email": "test01@gmail.com",
+      "floor": "11",
+      "phone": "84234707",
+      "fullName": "Isaac01",
+      "postalCode": "487220",
+      "addressLine": "Bedok North Street 6"
+    },
+    "customer": {
+      "id": 1,
+      "name": "Isaac01",
+      "email": "test01@gmail.com",
+      "phone": "84234707"
+    }
+  },
+  "version": "1.1"
+}

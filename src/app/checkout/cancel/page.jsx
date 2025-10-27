@@ -1,6 +1,7 @@
 'use client'
-import { useEffect } from 'react';
-import { useCheckoutContext } from 'src/sections/checkout/context';
+
+// import { useEffect } from 'react';
+// import { useCheckoutContext } from 'src/sections/checkout/context';
 import { CheckoutOrderCancelled } from 'src/sections/checkout/checkout-order-cancelled';
 
 export default function CheckoutCancelPage() {

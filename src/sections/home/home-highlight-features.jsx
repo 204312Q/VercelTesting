@@ -1,4 +1,5 @@
 'use client';
+
 import { useRef, useState } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
 import { useClientRect } from 'minimal-shared/hooks';
@@ -11,19 +12,16 @@ import Typography from '@mui/material/Typography';
 import { styled, useTheme } from '@mui/material/styles';
 
 import { CONFIG } from 'src/global-config';
-import { primaryColorPresets } from 'src/theme/with-settings';
 
-import { varFade, MotionViewport } from 'src/components/animate';
+// import { primaryColorPresets } from 'src/theme/with-settings';
+import { MotionViewport } from 'src/components/animate';
 
 import { SectionTitle } from './components/section-title';
-import { FloatLine, FloatPlusIcon } from './components/svg-elements';
+// import { FloatLine, FloatPlusIcon } from './components/svg-elements';
 
 // ----------------------------------------------------------------------
 
-const renderLines = () => (
-  <>
-  </>
-);
+const renderLines = () => null;
 
 export function HomeHighlightFeatures({ sx, ...other }) {
   const containerRoot = useClientRect();
@@ -74,9 +72,7 @@ const ITEMS = [
   {
     title: 'Milk Boosting Fish and Papaya Soup (木瓜鱼汤)',
     subtitle: 'Express your Papaya fish soup is a traditional dish highly recommended for confinement mothers. style with just one click.',
-    imgUrl: [
-      `${CONFIG.assetsDir}/menu/homedish/Papaya_Fish_soup_480x480.webp`,
-    ],
+    imgUrl: [`${CONFIG.assetsDir}/menu/homedish/Papaya_Fish_soup_480x480.webp`],
   },
   {
     title: 'Right-to-HK Style Steam Golden Snapper in Superior Soya Sauce (港式蒸鱼片)',

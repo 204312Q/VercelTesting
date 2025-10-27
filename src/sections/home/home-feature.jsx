@@ -1,4 +1,5 @@
 'use client';
+
 import { m } from 'framer-motion';
 
 import Box from '@mui/material/Box';
@@ -12,7 +13,7 @@ import { _carouselPromotion } from 'src/_mock';
 import { Image } from 'src/components/image';
 import { varFade, MotionViewport } from 'src/components/animate';
 import { Carousel, useCarousel, CarouselArrowFloatButtons } from 'src/components/carousel';
-import { paths } from 'src/routes/paths';
+// import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 

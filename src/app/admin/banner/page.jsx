@@ -1,15 +1,10 @@
 'use client';
-export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
-import {
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  Button,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { useState, useEffect, } from 'react';
+
+import { Stack, Button, Checkbox, TextField, Typography, FormControlLabel } from '@mui/material';
+
+export const dynamic = 'force-dynamic';
 
 export default function AdminBannerPage() {
   const [title, setTitle] = useState('');
@@ -117,16 +112,16 @@ export default function AdminBannerPage() {
                 const updatedSort = parseInt(e.target.value, 10);
                 setBanners((prev) =>
                   prev.map((item) =>
-                    item.id === b.id ? { ...item, sortOrder: updatedSort } : item
-                  )
+                    item.id === b.id ? { ...item, sortOrder: updatedSort } : item,
+                  ),
                 );
               }}
               onBlur={async () => {
                 const current = banners.find((x) => x.id === b.id);
                 await handleBannerUpdate(current);
               }}
-              size="small"
-              sx={{ width: 100 }}
+              size="medium"
+              sx={{ width: 200 }}
             />
 
             {/* Toggle isActive */}
@@ -155,7 +150,6 @@ export default function AdminBannerPage() {
           </Stack>
         ))}
       </Stack>
-
 
       {/* Column 3: Upload New Banner */}
       <Stack spacing={3} sx={{ width: '40%' }}>

@@ -1,5 +1,4 @@
 'use client';
-
 import { m } from 'framer-motion';
 import { varAlpha } from 'minimal-shared/utils';
 
@@ -10,7 +9,6 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { CONFIG } from 'src/global-config';
-
 import { Image } from 'src/components/image';
 import { Iconify } from 'src/components/iconify';
 import { varFade, MotionViewport } from 'src/components/animate';

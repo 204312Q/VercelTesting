@@ -104,10 +104,11 @@ function CheckoutContainer({ children }) {
     [activeStep, router]
   );
 
-  const onPayment = useCallback(async () => {
+  const onPayment = async () => {
     // Call your backend API to create a Stripe Checkout Session
     try {
-      const res = await fetch('/api/checkout', {
+      const res = await fetch('http://localhost:3032/api/checkout', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ products: state.items }),
       });
@@ -119,7 +120,7 @@ function CheckoutContainer({ children }) {
     } catch (error) {
       console.error('error during checkout', error);
     }
-  }, [state.items]);
+  };
 
   const onAddToCart = useCallback(
     (newItem) => {

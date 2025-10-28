@@ -3,26 +3,24 @@ import { useForm, Controller } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+// import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
-import Radio from '@mui/material/Radio';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
-import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
+// import Link, { linkClasses } from '@mui/material/Link';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
-import { fCurrency } from 'src/utils/format-number';
+import { fCurrency, fShortenNumber } from 'src/utils/format-number';
 
+// import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
-
-// import Rating from '@mui/material/Rating';
-// import Link, { linkClasses } from '@mui/material/Link';
-// import { fShortenNumber } from 'src/utils/format-number';
-// import { Label } from 'src/components/label';
 // import { NumberInput } from 'src/components/number-input';
 
 // ----------------------------------------------------------------------
@@ -44,11 +42,11 @@ export function ProductDetailsSummary({ items, product, addon, onAddToCart, disa
   } = product;
 
 
-  // const {
-  //   addon_id,
-  //   addon_name,
-  //   addon_price
-  // } = addon;
+  const {
+    addon_id,
+    addon_name,
+    addon_price
+  } = addon;
 
   const existProduct = !!items?.length && items.map((item) => item.id).includes(product_id);
 
@@ -283,42 +281,42 @@ export function ProductDetailsSummary({ items, product, addon, onAddToCart, disa
 
 
 
-  // const renderAddOns = () => (
-  //   <Stack spacing={1} sx={{ width: '100%' }}>
-  //     <Typography variant="subtitle2">Add-ons</Typography>
-  //     {Array.isArray(addon) && addon.length > 0 ? (
-  //       addon.map((add) => (
-  //         <Controller
-  //           key={add.addon_id}
-  //           name={`addons.${add.name}`}
-  //           control={control}
-  //           render={({ field }) => (
-  //             <FormControlLabel
-  //               control={
-  //                 <Radio
-  //                   checked={!!field.value}
-  //                   onChange={() => field.onChange(!field.value)}
-  //                 />
-  //               }
-  //               label={
-  //                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-  //                   <Typography sx={{ mr: 1 }}>{add.name}</Typography>
-  //                   <Typography color="text.secondary">
-  //                     {fCurrency(add.price)}
-  //                   </Typography>
-  //                 </Box>
-  //               }
-  //             />
-  //           )}
-  //         />
-  //       ))
-  //     ) : (
-  //       <Typography variant="body2" color="text.secondary">
-  //         No add-ons available.
-  //       </Typography>
-  //     )}
-  //   </Stack>
-  // );
+  const renderAddOns = () => (
+    <Stack spacing={1} sx={{ width: '100%' }}>
+      <Typography variant="subtitle2">Add-ons</Typography>
+      {Array.isArray(addon) && addon.length > 0 ? (
+        addon.map((add) => (
+          <Controller
+            key={add.addon_id}
+            name={`addons.${add.name}`}
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={
+                  <Radio
+                    checked={!!field.value}
+                    onChange={() => field.onChange(!field.value)}
+                  />
+                }
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography sx={{ mr: 1 }}>{add.name}</Typography>
+                    <Typography color="text.secondary">
+                      {fCurrency(add.price)}
+                    </Typography>
+                  </Box>
+                }
+              />
+            )}
+          />
+        ))
+      ) : (
+        <Typography variant="body2" color="text.secondary">
+          No add-ons available.
+        </Typography>
+      )}
+    </Stack>
+  );
 
   const renderActions = () => (
     <Box sx={{ gap: 2, display: 'flex' }}>

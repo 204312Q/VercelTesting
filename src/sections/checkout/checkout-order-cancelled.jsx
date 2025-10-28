@@ -43,7 +43,7 @@ export function CheckoutOrderCancelled({ onResetCart, ...other }) {
                 <OrderFailedIllustration />
 
                 <Typography color="text.secondary">
-                    We can&apos;t process your order at this time.
+                    We couldn't process your order at this time.
                     <br />
                     Please try again or contact support if the problem persists.
                 </Typography>

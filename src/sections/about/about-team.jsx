@@ -1,5 +1,4 @@
 'use client';
-
 import { m } from 'framer-motion';
 
 import Box from '@mui/material/Box';

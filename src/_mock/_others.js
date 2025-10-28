@@ -1,16 +1,13 @@
-
-import { paths } from 'src/routes/paths';
-
+import { label } from 'yet-another-react-lightbox';
 import { _mock } from './_mock';
-// import { label } from 'yet-another-react-lightbox';
-// import Image from 'next/image';
-// import { sizeof } from 'stylis';
-// import { createChainableState } from '@tiptap/core';
-// import { DesktopDatePicker } from '@mui/x-date-pickers';
+import Image from 'next/image';
+import { sizeof } from 'stylis';
+import { paths } from 'src/routes/paths';
+import { createChainableState } from '@tiptap/core';
+import { DesktopDatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
-// S - Homepage - Top 3 Selling Packages
 export const _carouselPackages = [
   {
     id: 1,
@@ -38,7 +35,6 @@ export const _carouselPackages = [
   }
 ];
 
-// S - Homepage - Why Choose Us?
 export const _carouselBenefits = [
   {
     id: 1,
@@ -66,7 +62,6 @@ export const _carouselBenefits = [
   }
 ];
 
-// S - Homepage - Part after view menu
 export const _carouselPromotion = [
   {
     id: 1,
@@ -97,7 +92,6 @@ export const _carouselPromotion = [
   }
 ];
 
-// S - Homepage - Our Popular Dishes
 export const _carouselPopularDish = [
   {
     id: 1,
@@ -128,7 +122,6 @@ export const _carouselPopularDish = [
   }
 ];
 
-// D - Order Now Page - Package Categories
 export const _packageCategories = [
   {
     id: 1,

@@ -7,7 +7,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-// import Divider from '@mui/material/Divider';
+import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
@@ -166,6 +166,7 @@ function PlanCard({ plan, sx, ...other }) {
             display: 'flex',
             position: 'relative',
             flexDirection: 'column',
+
           }),
           ...(Array.isArray(sx) ? sx : [sx]),
         ]}
@@ -211,6 +212,7 @@ function PlanCard({ plan, sx, ...other }) {
           {SingleMealPackage && 'Lunch Or Dinner'}
           {TrialMealPackage && 'Lunch Or Dinner'}
         </Typography>
+
 
         <Stack spacing={2.5}>
           {DualMealPackage && (

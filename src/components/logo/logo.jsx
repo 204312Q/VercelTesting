@@ -1,35 +1,33 @@
-import { forwardRef } from 'react';
+import { useId, forwardRef } from 'react';
 import { mergeClasses } from 'minimal-shared/utils';
 
 import Link from '@mui/material/Link';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 
 import { RouterLink } from 'src/routes/components';
 
 import { logoClasses } from './classes';
-
-// import { useId } from 'react';
 
 // ----------------------------------------------------------------------
 
 export const Logo = forwardRef((props, ref) => {
   const { className, href = '/', isSingle = true, disabled, sx, ...other } = props;
 
-  // const theme = useTheme();
+  const theme = useTheme();
 
-  // const gradientId = useId();
+  const gradientId = useId();
 
-  // const TEXT_PRIMARY = theme.vars.palette.text.primary;
-  // const PRIMARY_LIGHT = theme.vars.palette.primary.light;
-  // const PRIMARY_MAIN = theme.vars.palette.primary.main;
-  // const PRIMARY_DARKER = theme.vars.palette.primary.dark;
+  const TEXT_PRIMARY = theme.vars.palette.text.primary;
+  const PRIMARY_LIGHT = theme.vars.palette.primary.light;
+  const PRIMARY_MAIN = theme.vars.palette.primary.main;
+  const PRIMARY_DARKER = theme.vars.palette.primary.dark;
 
   // OR using local (public folder)
   
   const singleLogo = (
     <img
       alt="Single logo"
-      src="/logo/logo-single.png"
+      src={`/logo/logo-single.png`}
       style={{ width: '250%', height: 'auto', display: 'block', objectFit: 'contain' }}
     />
   );
@@ -37,7 +35,7 @@ export const Logo = forwardRef((props, ref) => {
   const fullLogo = (
     <img
       alt="Full logo"
-      src="/logo/logo-full.png"
+      src={`/logo/logo-full.png`}
       style={{ width: '250%', height: 'auto', display: 'block', objectFit: 'contain' }}
     />
   );

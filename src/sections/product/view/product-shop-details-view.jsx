@@ -10,19 +10,19 @@ import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid2';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { Image } from 'src/components/image';
 
 import { paths } from 'src/routes/paths';
 
+import { Image } from 'src/components/image';
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { CartIcon } from '../cart-icon';
 import { useCheckoutContext } from '../../checkout/context';
-import { ProductDetailsReview } from '../product-details-review';
 import { ProductDetailsSummary } from '../product-details-summary';
-import { ProductDetailsCarousel } from '../product-details-carousel';
-import { ProductDetailsDescription } from '../product-details-description';
+// import { ProductDetailsReview } from '../product-details-review';
+// import { ProductDetailsCarousel } from '../product-details-carousel';
+// import { ProductDetailsDescription } from '../product-details-description';
 
 // ----------------------------------------------------------------------
 

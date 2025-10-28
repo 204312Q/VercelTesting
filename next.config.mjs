@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: true,
+  trailingSlash: false,
 
   env: {
-    // You can keep this if needed for client-side
     BUILD_STATIC_EXPORT: 'false',
   },
 
@@ -30,5 +29,4 @@ const nextConfig = {
   // ✅ This is the ONLY valid output mode for Prisma + API routes
   output: 'standalone',
 };
-
 export default nextConfig;

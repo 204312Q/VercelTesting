@@ -5,17 +5,18 @@ import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Image from 'next/image';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
-
 import { _socials, _paymenttypes } from 'src/_mock';
 import { FacebookIcon, InstagramIcon, TiktokIcon } from 'src/assets/icons';
+import { primary } from 'src/theme';
 
 import { Logo } from 'src/components/logo';
-import { primary } from 'src/theme';
+
+
 // ----------------------------------------------------------------------
 
 const BehindTheBrand = [

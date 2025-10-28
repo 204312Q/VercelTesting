@@ -1,19 +1,20 @@
 'use client';
-import { m } from 'framer-motion';
 
 import { useState } from 'react';
+import { m } from 'framer-motion';
 
 import Box from '@mui/material/Box';
+import { useMediaQuery } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { useMediaQuery } from '@mui/material';
 
 import { _carouselPopularDish } from 'src/_mock';
 
 import { Image } from 'src/components/image';
 import { varFade, MotionViewport } from 'src/components/animate';
-import { Carousel, useCarousel, CarouselArrowFloatButtons } from 'src/components/carousel';
 import { ConfirmDialog } from 'src/components/custom-dialog/confirm-dialog';
+import { Carousel, useCarousel, CarouselArrowFloatButtons } from 'src/components/carousel';
+
 // ----------------------------------------------------------------------
 
 export function HomePopularDish({ sx, ...other }) {

@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+
 
 // Move static data outside component to prevent recreation
 const DELIVERY_NOTES = [

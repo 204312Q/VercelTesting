@@ -186,13 +186,4 @@ export default [
   eslintJs.configs.recommended,
   reactPlugin.configs.flat.recommended,
   customConfig,
-
-  {
-    rules: {
-      'perfectionist/sort-imports': 'off',
-      'perfectionist/sort-named-imports': 'off',
-      'perfectionist/sort-named-exports': 'off',
-      'perfectionist/sort-exports': 'off',
-    },
-  },
 ];

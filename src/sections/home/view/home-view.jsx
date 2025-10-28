@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useBackToTop } from 'minimal-shared/hooks';
 
 import Fab from '@mui/material/Fab';
@@ -10,14 +9,17 @@ import SvgIcon from '@mui/material/SvgIcon';
 import { ScrollProgress, useScrollProgress } from 'src/components/animate/scroll-progress';
 
 import { HomeHero } from '../home-hero';
-import { HomeMenu } from '../home-menu';
+import { TopPackages } from '../home-top-packages';
 import { Benefits } from '../home-benefit';
 import { HomeFeature } from '../home-feature';
-import { HomePartners } from '../home-partners';
-import { TopPackages } from '../home-top-packages';
-import { HomeOrderSteps } from '../home-orderSteps';
+import { HomeMenu } from '../home-menu';
 import { HomePopularDish } from '../home-populardish';
-// import { _mock } from 'src/_mock';
+import { HomeOrderSteps } from '../home-orderSteps';
+import { HomePartners } from '../home-partners';
+
+import { _mock } from 'src/_mock';
+
+import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -27,27 +29,21 @@ export function HomeView() {
   const { onBackToTop, isVisible } = useBackToTop('90%');
   const [banners, setBanners] = useState([]);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-
   useEffect(() => {
     const fetchBanners = () => {
-      fetch(`${API_BASE_URL ? API_BASE_URL.replace(/\/$/, '') : ''}/api/banner`, { cache: 'no-store' })
-        .then((res) => {
-        if (!res.ok) throw new Error(`GET /api/banner ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        const list = Array.isArray(data) ? data : data?.banners ?? [];
-        const activeBanners = list.filter((b) => b?.isActive);
-        setBanners(activeBanners);
-      })
-      .catch((err) => console.error('Error fetching banners:', err));
-  };
+      fetch('/api/banner')
+        .then((res) => res.json())
+        .then((data) => {
+          const activeBanners = data.filter((b) => b.isActive);
+          setBanners(activeBanners);
+        })
+        .catch((err) => console.error('Error fetching banners:', err));
+   };
     
    fetchBanners();
    const interval = setInterval(fetchBanners, 30000); // Refresh every 30 secs
     return () => clearInterval(interval); 
-}, [API_BASE_URL]);
+}, []);
 
   return (
     <>
@@ -71,15 +67,14 @@ export function HomeView() {
           py: { xs: 2, sm: 4, md: 6 },
         }}
       >
-        <TopPackages /> {/* Top 3 Selling Packages */}
-        <Benefits /> {/* Why Choose Us? */}
+        <TopPackages />
 
-        <HomeMenu /> {/* X Done */}
-        <HomeFeature /> {/* X Done - 3 reroute to other products with "View More" */}
-
-        <HomePopularDish /> {/* Our Popular Dishes */}
-        <HomeOrderSteps sx={{ mt: 4 }} /> {/* What's the next step? */}
-        <HomePartners sx={{ mt: 4 }} /> {/* Partners */}
+        <Benefits />
+        <HomeMenu />
+        <HomeFeature />
+        <HomePopularDish />
+        <HomeOrderSteps sx={{ mt: 4 }} />
+        <HomePartners sx={{ mt: 4 }} />
 
       </Stack>
     </>

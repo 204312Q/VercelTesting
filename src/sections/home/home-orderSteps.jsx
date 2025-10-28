@@ -1,16 +1,24 @@
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
+import { CONFIG } from 'src/global-config';
 import { paths } from 'src/routes/paths';
-// import { CONFIG } from 'src/global-config';
 
 // Order steps data with your images
 const orderSteps = [
-  { id: 1, image: '/assets/OrderSteps/OrderStep-1.webp' },
-  { id: 2, image: '/assets/OrderSteps/OrderStep-2.webp' },
-  { id: 3, image: '/assets/OrderSteps/OrderStep-3.webp' },
+    {
+        id: 1,
+        image: "/assets/OrderSteps/OrderStep-1.webp",
+    },
+    {
+        id: 2,
+        image: "/assets/OrderSteps/OrderStep-2.webp",
+    },
+    {
+        id: 3,
+        image: "/assets/OrderSteps/OrderStep-3.webp",
+    }
 ];
 
 export function HomeOrderSteps({ sx, ...other }) {
@@ -30,7 +38,7 @@ export function HomeOrderSteps({ sx, ...other }) {
             {...other}
         >
             <Typography variant="h2" sx={{ my: 3, color: 'primary.main', textAlign: 'center' }}>
-                What&apos;s the next step?
+                What's the next step?
             </Typography>
 
             <Container sx={{ mb: 4 }}>

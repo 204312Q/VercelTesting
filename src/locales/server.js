@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { cache } from 'react';
 import { createInstance } from 'i18next';
 import { cookies as getCookies } from 'next/headers';
@@ -19,8 +17,10 @@ import { defaultNS, cookieName, i18nOptions, fallbackLng } from './locales-confi
  */
 
 export async function detectLanguage() {
-  const cookieStore = await getCookies();
-  const language = cookieStore.get(cookieName)?.value ?? fallbackLng;
+  const cookies = getCookies();
+
+  const language = cookies.get(cookieName)?.value ?? fallbackLng;
+
   return language;
 }
 

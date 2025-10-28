@@ -4,7 +4,6 @@
   "version": "6.2.0",
   "description": "Next & JavaScript",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev -p 3032",
     "start": "next start -p 3032",
@@ -19,14 +18,13 @@
     "clean": "rm -rf node_modules .next out dist build",
     "re:dev": "yarn clean && yarn install && yarn dev",
     "re:build": "yarn clean && yarn install && yarn build",
-    "re:build-npm": "npm run clean && npm install && npm run build",
-    "seed": "prisma db seed"
+    "re:build-npm": "npm run clean && npm install && npm run build"
   },
   "engines": {
     "node": "20.x"
   },
   "prisma": {
-    "seed": "node prisma/scripts/seedAll.js"
+    "seed": "node prisma/seedBanner.js"
   },
   "packageManager": "yarn@1.22.22",
   "dependencies": {
@@ -57,7 +55,7 @@
     "@mui/x-data-grid": "^7.23.1",
     "@mui/x-date-pickers": "^7.23.1",
     "@mui/x-tree-view": "^7.23.0",
-    "@prisma/client": "^6.16.3",
+    "@prisma/client": "^6.12.0",
     "@react-pdf/renderer": "^4.1.5",
     "@stripe/stripe-js": "^7.4.0",
     "@supabase/supabase-js": "^2.47.2",
@@ -77,7 +75,6 @@
     "aws-amplify": "^6.10.2",
     "axios": "^1.7.9",
     "bcrypt": "^6.0.0",
-    "cloudinary": "^2.7.0",
     "dayjs": "^1.11.13",
     "embla-carousel": "^8.5.1",
     "embla-carousel-auto-height": "^8.5.1",
@@ -96,7 +93,7 @@
     "mapbox-gl": "^3.4.0",
     "minimal-shared": "^1.0.3",
     "mui-one-time-password-input": "^3.0.1",
-    "next": "^15.5.2",
+    "next": "^14.2.30",
     "nprogress": "^0.2.0",
     "react": "^18.3.1",
     "react-apexcharts": "^1.7.0",
@@ -112,9 +109,7 @@
     "rehype-highlight": "^7.0.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
-    "server-only": "^0.0.1",
     "simplebar-react": "^3.2.6",
-    "slugify": "^1.6.6",
     "sonner": "^1.7.0",
     "stripe": "^18.2.1",
     "stylis": "^4.3.4",
@@ -127,10 +122,6 @@
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "@svgr/webpack": "^8.1.0",
-    "@types/node": "^24.3.0",
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
-    "dotenv": "^17.2.1",
     "eslint": "^9.16.0",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.31.0",
@@ -140,7 +131,7 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^15.13.0",
     "prettier": "^3.4.2",
-    "prisma": "^6.16.3"
+    "prisma": "^6.12.0"
   },
   "main": "index.js",
   "keywords": [],

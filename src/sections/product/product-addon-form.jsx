@@ -1,16 +1,14 @@
 'use client';
 
-import {useMemo, useState, useEffect, useCallback } from 'react';
-
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Radio from '@mui/material/Radio';
-import Checkbox from '@mui/material/Checkbox';
-import Typography from '@mui/material/Typography';
-import RadioGroup from '@mui/material/RadioGroup';
 import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 export function ProductAddOnForm({ addOnItems = [], onAddOnChange }) {
     const [selectedAddOns, setSelectedAddOns] = useState([]);
@@ -28,8 +26,13 @@ export function ProductAddOnForm({ addOnItems = [], onAddOnChange }) {
             }
 
             if (!grouped[baseName]) {
-                grouped[baseName] = { name: baseName, items: [], isSingle: false };
+                grouped[baseName] = {
+                    name: baseName,
+                    items: [],
+                    isSingle: false
+                };
             }
+
             grouped[baseName].items.push(addon);
         });
 
@@ -46,11 +49,11 @@ export function ProductAddOnForm({ addOnItems = [], onAddOnChange }) {
         return grouped;
     }, [addOnItems]);
 
-    // // Memoize total price calculation
-    // const totalAddOnPrice = useMemo(() =>
-    //     selectedAddOns.reduce((sum, item) => sum + item.price, 0),
-    //     [selectedAddOns]
-    // );
+    // Memoize total price calculation
+    const totalAddOnPrice = useMemo(() =>
+        selectedAddOns.reduce((sum, item) => sum + item.price, 0),
+        [selectedAddOns]
+    );
 
     // Memoize isGroupSelected function
     const isGroupSelected = useCallback((groupName, singleItem = null) => {

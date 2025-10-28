@@ -7,24 +7,23 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 
 import { paths } from 'src/routes/paths';
+import { usePathname } from 'src/routes/hooks';
 
 import { Logo } from 'src/components/logo';
 
-import { Footer } from './footer';
 import { NavMobile } from './nav/mobile';
 import { NavDesktop } from './nav/desktop';
+import { Footer } from './footer';
 import { MainSection } from '../core/main-section';
 import { MenuButton } from '../components/menu-button';
 import { LayoutSection } from '../core/layout-section';
 import { HeaderSection } from '../core/header-section';
 import { navData as mainNavData } from '../nav-config-main';
 
-// import { usePathname } from 'src/routes/hooks';
-
 // ----------------------------------------------------------------------
 
 export function MainLayout({ sx, cssVars, children, slotProps, layoutQuery = 'md' }) {
-  // const pathname = usePathname();
+  const pathname = usePathname();
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
 

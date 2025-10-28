@@ -2,48 +2,46 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-// import Tooltip from '@mui/material/Tooltip';
-import  { fabClasses } from '@mui/material/Fab';
-// import Fab from '@mui/material/Fab';
+import Tooltip from '@mui/material/Tooltip';
+import Fab, { fabClasses } from '@mui/material/Fab';
 
 import { RouterLink } from 'src/routes/components';
 
 import { fCurrency } from 'src/utils/format-number';
 
-// import { Label } from 'src/components/label';
+import { Label } from 'src/components/label';
 import { Image } from 'src/components/image';
-// import { Iconify } from 'src/components/iconify';
+import { Iconify } from 'src/components/iconify';
 
-// import { useCheckoutContext } from '../checkout/context';
+
+import { useCheckoutContext } from '../checkout/context';
 
 // ----------------------------------------------------------------------
 
 export function ProductItem({ product, detailsHref }) {
-  // const { onAddToCart } = useCheckoutContext();
+  const { onAddToCart } = useCheckoutContext();
 
-  // const { product_id, name, image, price, priceSale, saleLabel } =
-  //   product;
-
-  const { name, image, price } = product;
+  const { product_id, name, image, price, priceSale, saleLabel } =
+    product;
 
   console.log('Product_detail', product);
 
-  // const handleAddCart = async () => {
-  //   const newProduct = {
-  //     product_id,
-  //     name,
-  //     image,
-  //     price,
-  //     priceSale,
-  //     saleLabel,
-  //     quantity: 1,
-  //   };
-  //   try {
-  //     onAddToCart(newProduct);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const handleAddCart = async () => {
+    const newProduct = {
+      product_id,
+      name,
+      image,
+      price,
+      priceSale,
+      saleLabel,
+      quantity: 1,
+    };
+    try {
+      onAddToCart(newProduct);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // const renderLabels = () =>
   //   (saleLabel.enabled) && (

@@ -95,16 +95,16 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     console.log('🔍 sendOrderConfirmationEmail called:', {
       orderId,
       hasOrderPayload: !!orderPayload,
-      hasDelivery: !!orderPayload?.delivery,
+      hasDelivery: !!orderPayload?.order?.delivery,  // CHANGED: added .order
       hasOrder: !!orderPayload?.order,
-      email: orderPayload?.delivery?.email,
+      email: orderPayload?.order?.delivery?.email,   // CHANGED: added .order
       paymentPlan: orderPayload?.order?.paymentPlan
     });
 
-    if (!orderPayload?.delivery?.email) {
+    if (!orderPayload?.order?.delivery?.email) {     // CHANGED: added .order
       console.log('⚠️ No email address found in payload:', {
-        delivery: orderPayload?.delivery,
-        customer: orderPayload?.customer
+        delivery: orderPayload?.order?.delivery,     // CHANGED: added .order
+        customer: orderPayload?.order?.customer      // CHANGED: added .order
       });
       return;
     }
@@ -146,10 +146,10 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
 
     console.log('🌐 Email endpoint:', emailEndpoint);
     console.log('📬 Sending email request:', {
-      to: orderPayload.delivery.email,
+      to: orderPayload.order.delivery.email,         // CHANGED: added .order
       subject: `Order Confirmation - ${orderPayload.order.id}`,
       bodySize: JSON.stringify({
-        to: orderPayload.delivery.email,
+        to: orderPayload.order.delivery.email,       // CHANGED: added .order
         subject: `Order Confirmation - ${orderPayload.order.id}`,
         html,
       }).length
@@ -159,7 +159,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: orderPayload.delivery.email,
+        to: orderPayload.order.delivery.email,       // CHANGED: added .order
         subject: `Order Confirmation - ${orderPayload.order.id}`,
         html,
       }),

@@ -95,16 +95,16 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     console.log('🔍 sendOrderConfirmationEmail called:', {
       orderId,
       hasOrderPayload: !!orderPayload,
-      hasDelivery: !!orderPayload?.order?.delivery,  // CHANGED: added .order
+      hasDelivery: !!orderPayload?.order?.delivery,
       hasOrder: !!orderPayload?.order,
-      email: orderPayload?.order?.delivery?.email,   // CHANGED: added .order
+      email: orderPayload?.order?.delivery?.email,
       paymentPlan: orderPayload?.order?.paymentPlan
     });
 
-    if (!orderPayload?.order?.delivery?.email) {     // CHANGED: added .order
+    if (!orderPayload?.order?.delivery?.email) {
       console.log('⚠️ No email address found in payload:', {
-        delivery: orderPayload?.order?.delivery,     // CHANGED: added .order
-        customer: orderPayload?.order?.customer      // CHANGED: added .order
+        delivery: orderPayload?.order?.delivery,
+        customer: orderPayload?.order?.customer
       });
       return;
     }
@@ -133,9 +133,28 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       templateType: isPartialPayment ? 'partial' : 'full'
     });
 
+    // FLATTEN THE DATA STRUCTURE FOR EMAIL TEMPLATES
+    const emailData = {
+      order: orderPayload.order,
+      delivery: orderPayload.order.delivery,
+      customer: orderPayload.order.customer,
+      items: orderPayload.order.lineItems || [],
+      pricing: orderPayload.order.pricing,
+      requests: orderPayload.order.requests || [],
+      notes: orderPayload.order.note,
+      // Add product and productOption from the lineItems if available
+      product: orderPayload.order.lineItems?.[0]?.productName ? {
+        name: orderPayload.order.lineItems[0].productName
+      } : {},
+      productOption: orderPayload.order.lineItems?.[0]?.option ? {
+        label: orderPayload.order.lineItems[0].option.label,
+        price: orderPayload.order.lineItems[0].unitPriceCents / 100
+      } : {}
+    };
+
     const html = isPartialPayment
-      ? partialPaymentTemplate(orderPayload)
-      : fullPaymentConfirmationTemplate(orderPayload);
+      ? partialPaymentTemplate(emailData)
+      : fullPaymentConfirmationTemplate(emailData);
 
     console.log('🌐 Email HTML generated:', {
       htmlLength: html?.length,
@@ -146,10 +165,10 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
 
     console.log('🌐 Email endpoint:', emailEndpoint);
     console.log('📬 Sending email request:', {
-      to: orderPayload.order.delivery.email,         // CHANGED: added .order
+      to: orderPayload.order.delivery.email,
       subject: `Order Confirmation - ${orderPayload.order.id}`,
       bodySize: JSON.stringify({
-        to: orderPayload.order.delivery.email,       // CHANGED: added .order
+        to: orderPayload.order.delivery.email,
         subject: `Order Confirmation - ${orderPayload.order.id}`,
         html,
       }).length
@@ -159,7 +178,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: orderPayload.order.delivery.email,       // CHANGED: added .order
+        to: orderPayload.order.delivery.email,
         subject: `Order Confirmation - ${orderPayload.order.id}`,
         html,
       }),
@@ -181,7 +200,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     });
 
     if (response.ok) {
-      console.log(`✅ Order confirmation email sent to ${orderPayload.order.delivery.email}`); // FIXED: added .order
+      console.log(`✅ Order confirmation email sent to ${orderPayload.order.delivery.email}`);
 
       // Mark email as sent to prevent duplicates
       await prisma.orderConfirmation.update({

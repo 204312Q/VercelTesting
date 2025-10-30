@@ -437,7 +437,7 @@ export async function POST(req) {
         });
 
         // UPDATED: Actually send the email with real data
-        await sendOrderConfirmationEmail(readPayload);
+        await sendOrderConfirmationEmail(readPayload, orderId);
         // void sendOrderConfirmationEmail(payload);
         // void enqueueDynamicsSync(orderId); // sets export_status late
       }

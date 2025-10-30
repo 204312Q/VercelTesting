@@ -1,6 +1,7 @@
 // src/app/api/stripe/webhook/route.js
 import { prisma } from 'src/server/db';
 import { toOrderReadModel } from 'src/lib/serializers/order';
+import { fullPaymentConfirmationTemplate, partialPaymentTemplate } from 'src/components/email-templates/email-confirmation.js';
 
 import { json, stripe, badRequest, recomputePaid } from '../../_lib';
 
@@ -88,6 +89,44 @@ async function ensureCustomerForOrder(db, orderId) {
   return customer;
 }
 
+// Send order confirmation email (New)
+async function sendOrderConfirmationEmail(orderPayload) {
+  try {
+    if (!orderPayload?.delivery?.email) {
+      console.log('⚠️ No email address found, skipping email send');
+      return;
+    }
+
+    // Determine email template based on payment plan
+    const isPartialPayment = orderPayload.order?.paymentPlan === 'PARTIAL';
+    const html = isPartialPayment
+      ? partialPaymentTemplate(orderPayload)
+      : fullPaymentConfirmationTemplate(orderPayload);
+
+    const emailEndpoint = process.env.NEXT_PUBLIC_BASE_URL
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`
+      : 'https://minimal-vercel-testing.vercel.app/api/email';
+
+    const response = await fetch(emailEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: orderPayload.delivery.email,
+        subject: `Order Confirmation - ${orderPayload.order.id}`,
+        html,
+      }),
+    });
+
+    if (response.ok) {
+      console.log(`✅ Order confirmation email sent to ${orderPayload.delivery.email}`);
+    } else {
+      console.error(`Failed to send email: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error sending order confirmation email:', error);
+  }
+}
+
 export async function buildOrderSnapshot(db, orderId) {
   const order = await db.order.findUnique({
     where: { id: orderId },
@@ -101,7 +140,7 @@ export async function buildOrderSnapshot(db, orderId) {
       customer: true,
       requests: { include: { specialRequest: true } },
       notes: true,
-      
+
     },
   });
   if (!order) return null;
@@ -131,25 +170,25 @@ export async function buildOrderSnapshot(db, orderId) {
     },
 
     customer: order.customer ? {
-          id: order.customer.customer_id,
-          name: order.customer.name,
-          email: order.customer.email,
-          phone: order.customer.phone,
-          address: order.customer.address,
-        } : null,
+      id: order.customer.customer_id,
+      name: order.customer.name,
+      email: order.customer.email,
+      phone: order.customer.phone,
+      address: order.customer.address,
+    } : null,
 
     delivery: order.delivery ? {
-          full_name: order.delivery.full_name,
-          email: order.delivery.email,
-          phone: order.delivery.phone,
-          address_line: order.delivery.address_line,
-          floor: order.delivery.floor,
-          unit: order.delivery.unit,
-          postal_code: order.delivery.postal_code,
-        } : null,
+      full_name: order.delivery.full_name,
+      email: order.delivery.email,
+      phone: order.delivery.phone,
+      address_line: order.delivery.address_line,
+      floor: order.delivery.floor,
+      unit: order.delivery.unit,
+      postal_code: order.delivery.postal_code,
+    } : null,
 
     product: {
-      product_id: order.product.product_id, 
+      product_id: order.product.product_id,
       name: order.product.name,
     },
 
@@ -214,7 +253,7 @@ export async function POST(req) {
   // -------------------- Local test helper --------------------
   const testMode = req.headers.get('x-test-stripe');
   if (process.env.NODE_ENV === 'development' && testMode) {
-    const { orderId, paymentId, status, purpose} = await req.json();
+    const { orderId, paymentId, status, purpose } = await req.json();
 
     await prisma.payment.update({
       where: { payment_id: paymentId },
@@ -297,6 +336,8 @@ export async function POST(req) {
           create: { order_id: orderId, payload: readPayload, export_status: 'PENDING' },
         });
 
+        // UPDATED: Actually send the email with real data
+        await sendOrderConfirmationEmail(readPayload);
         // void sendOrderConfirmationEmail(payload);
         // void enqueueDynamicsSync(orderId); // sets export_status late
       }
@@ -336,6 +377,10 @@ export async function POST(req) {
             update: { payload: readPayload, export_status: 'PENDING', last_error: null },
             create: { order_id: orderId, payload: readPayload, export_status: 'PENDING' },
           });
+
+
+          // UPDATED: Actually send the email with real data
+          // await sendOrderConfirmationEmail(readPayload);
 
           // void sendOrderConfirmationEmail(payload);
           // void enqueueDynamicsSync(orderId); // sets export_status late

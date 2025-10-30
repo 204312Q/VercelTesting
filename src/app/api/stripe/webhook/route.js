@@ -90,22 +90,72 @@ async function ensureCustomerForOrder(db, orderId) {
 }
 
 // Send order confirmation email (New)
-async function sendOrderConfirmationEmail(orderPayload) {
+async function sendOrderConfirmationEmail(orderPayload, orderId) {
   try {
+    console.log('🔍 sendOrderConfirmationEmail called:', {
+      orderId,
+      hasOrderPayload: !!orderPayload,
+      hasDelivery: !!orderPayload?.delivery,
+      hasOrder: !!orderPayload?.order,
+      email: orderPayload?.delivery?.email,
+      paymentPlan: orderPayload?.order?.paymentPlan
+    });
+
     if (!orderPayload?.delivery?.email) {
-      console.log('⚠️ No email address found, skipping email send');
+      console.log('⚠️ No email address found in payload:', {
+        delivery: orderPayload?.delivery,
+        customer: orderPayload?.customer
+      });
+      return;
+    }
+
+    // Check if email was already sent (add deduplication)
+    const existingConfirmation = await prisma.orderConfirmation.findUnique({
+      where: { order_id: orderId }
+    });
+
+    console.log('📋 Order confirmation record:', {
+      exists: !!existingConfirmation,
+      emailSent: existingConfirmation?.email_sent,
+      exportStatus: existingConfirmation?.export_status
+    });
+
+    if (existingConfirmation?.email_sent) {
+      console.log(`📧 Email already sent for order ${orderId}, skipping duplicate`);
       return;
     }
 
     // Determine email template based on payment plan
     const isPartialPayment = orderPayload.order?.paymentPlan === 'PARTIAL';
+    console.log('📧 Email template selection:', {
+      paymentPlan: orderPayload.order?.paymentPlan,
+      isPartialPayment,
+      templateType: isPartialPayment ? 'partial' : 'full'
+    });
+
     const html = isPartialPayment
       ? partialPaymentTemplate(orderPayload)
       : fullPaymentConfirmationTemplate(orderPayload);
 
+    console.log('🌐 Email HTML generated:', {
+      htmlLength: html?.length,
+      hasHtml: !!html
+    });
+
     const emailEndpoint = process.env.NEXT_PUBLIC_BASE_URL
       ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`
       : 'https://minimal-vercel-testing.vercel.app/api/email';
+
+    console.log('🌐 Email endpoint:', emailEndpoint);
+    console.log('📬 Sending email request:', {
+      to: orderPayload.delivery.email,
+      subject: `Order Confirmation - ${orderPayload.order.id}`,
+      bodySize: JSON.stringify({
+        to: orderPayload.delivery.email,
+        subject: `Order Confirmation - ${orderPayload.order.id}`,
+        html,
+      }).length
+    });
 
     const response = await fetch(emailEndpoint, {
       method: 'POST',
@@ -117,13 +167,63 @@ async function sendOrderConfirmationEmail(orderPayload) {
       }),
     });
 
+    let responseText;
+    try {
+      responseText = await response.text();
+    } catch (e) {
+      responseText = 'Could not read response text';
+    }
+
+    console.log('📨 Email API response:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      headers: Object.fromEntries(response.headers.entries()),
+      body: responseText
+    });
+
     if (response.ok) {
       console.log(`✅ Order confirmation email sent to ${orderPayload.delivery.email}`);
+
+      // Mark email as sent to prevent duplicates
+      await prisma.orderConfirmation.update({
+        where: { order_id: orderId },
+        data: {
+          email_sent: true,
+          email_sent_at: new Date(),
+          last_error: null
+        }
+      });
+      console.log('✅ Email status updated in database');
     } else {
-      console.error(`Failed to send email: ${response.status}`);
+      console.error(`❌ Failed to send email: ${response.status} - ${responseText}`);
+
+      // Log the error in database
+      await prisma.orderConfirmation.update({
+        where: { order_id: orderId },
+        data: {
+          last_error: `Email failed: ${response.status} - ${responseText}`
+        }
+      });
     }
   } catch (error) {
-    console.error('Error sending order confirmation email:', error);
+    console.error('❌ Error in sendOrderConfirmationEmail:', {
+      error: error.message,
+      stack: error.stack,
+      orderId
+    });
+
+    // Log the error in database
+    try {
+      await prisma.orderConfirmation.update({
+        where: { order_id: orderId },
+        data: {
+          last_error: `Email error: ${error.message}`
+        }
+      });
+    } catch (dbError) {
+      console.error('❌ Failed to log error to database:', dbError);
+    }
   }
 }
 

@@ -181,7 +181,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     });
 
     if (response.ok) {
-      console.log(`✅ Order confirmation email sent to ${orderPayload.delivery.email}`);
+      console.log(`✅ Order confirmation email sent to ${orderPayload.order.delivery.email}`); // FIXED: added .order
 
       // Mark email as sent to prevent duplicates
       await prisma.orderConfirmation.update({

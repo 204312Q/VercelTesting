@@ -388,10 +388,27 @@ export async function POST(req) {
     case 'checkout.session.completed': {
       const s = event.data.object;
 
+      // ADD DEBUG LOGGING HERE:
+      console.log('🔍 Real payment webhook received:', {
+        sessionId: s.id,
+        metadata: s.metadata,
+        hasOrderId: !!s.metadata?.orderId,
+        hasPaymentId: !!s.metadata?.paymentId
+      });
+
       // Re-read the session with expansions so metadata & PI are definitely present
       const session = await stripe.checkout.sessions.retrieve(s.id, { expand: ['payment_intent'] });
       const orderId = Number(session.metadata?.orderId);
       const paymentId = Number(session.metadata?.paymentId);
+
+      // ADD DEBUG LOGGING HERE:
+      console.log('🔍 Parsed metadata:', {
+        orderId,
+        paymentId,
+        isValidOrderId: !isNaN(orderId) && orderId > 0,
+        isValidPaymentId: !isNaN(paymentId) && paymentId > 0
+      });
+
       const enumMethod = await inferEnumMethodFromStripe(stripe, session);
       const piId =
         typeof session.payment_intent === 'string'
@@ -425,6 +442,16 @@ export async function POST(req) {
       if (orderId) await ensureCustomerForOrder(prisma, orderId);
 
       const dbPayload = await buildOrderSnapshot(prisma, orderId);
+
+      // ADD THIS DEBUG:
+      console.log('🗄️ Database query result:', {
+        orderId,
+        hasDbPayload: !!dbPayload,
+        hasDelivery: !!dbPayload?.delivery,
+        deliveryEmail: dbPayload?.delivery?.email,
+        fullPayload: dbPayload ? 'Order found' : 'Order NOT found'
+      });
+
       if (dbPayload) {
         const readPayload = toOrderReadModel(dbPayload);
 
@@ -439,7 +466,9 @@ export async function POST(req) {
         // void sendOrderConfirmationEmail(payload);
         // void enqueueDynamicsSync(orderId); // sets export_status late
       }
-
+      else {
+        console.log('buildOrderSnapshot returned null - order not found in database');
+      }
       // Recompute order.amount_paid & is_fully_paid
       if (orderId) await recomputePaid(orderId);
       break;

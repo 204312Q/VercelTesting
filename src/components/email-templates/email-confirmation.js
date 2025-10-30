@@ -1,19 +1,25 @@
 const logoUrl = 'https://minimal-vercel-testing.vercel.app/logo/logo-single.png';
 
 // Full Payment Confirmation Template
-export function fullPaymentConfirmationTemplate(order) {
+export function fullPaymentConfirmationTemplate(orderPayload) {
   const {
-    id: confirmationNo,
-    createdAt,
-    serviceDate,
-    inputType,
-    session,
-    lineItems = [],
+    order = {},
+    items = [],
     requests = [],
-    note,
+    notes,
     pricing = {},
     delivery = {},
-    customer = {}
+    customer = {},
+    product = {},
+    productOption = {}
+  } = orderPayload;
+
+  const {
+    id: confirmationNo,
+    created_at: createdAt,
+    input_date: serviceDate,
+    input_type: inputType,
+    session
   } = order;
 
   // Format date
@@ -23,26 +29,37 @@ export function fullPaymentConfirmationTemplate(order) {
     day: 'numeric'
   });
 
-  // Build items array from lineItems
-  const items = lineItems.map(item => ({
+  // Build items array from webhook items structure
+  const emailItems = items.map(item => ({
     quantity: item.quantity,
-    name: `${item.productName}${item.option?.value ? ` - ${item.option.value}` : ''}`,
-    dateSelected: serviceDate,
-    gst: `$${(item.lineTotal * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
-    price: item.lineTotal.toFixed(2)
+    name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
+    dateSelected: serviceDate || 'TBD',
+    gst: `$${(item.price * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
+    price: item.price.toFixed(2)
   }));
+
+  // Add base product if no items
+  if (emailItems.length === 0 && product.name) {
+    emailItems.push({
+      quantity: 1,
+      name: `${product.name}${productOption.label ? ` - ${productOption.label}` : ''}`,
+      dateSelected: serviceDate || 'TBD',
+      gst: `$${(productOption.price * 0.09 / 1.09).toFixed(2)}`,
+      price: productOption.price.toFixed(2)
+    });
+  }
 
   // Format special requests
   const specialRequests = [];
   if (requests?.length > 0) {
-    specialRequests.push(...requests.map(req => req.code || req.value));
+    specialRequests.push(...requests.map(req => req.label || req.code || req.value));
   }
-  if (note?.trim()) {
-    specialRequests.push(note.trim());
+  if (notes?.trim()) {
+    specialRequests.push(notes.trim());
   }
 
   // Build delivery address
-  const deliveryAddress = `${delivery.addressLine || ''}${delivery.floor ? `, #${delivery.floor}` : ''}${delivery.unit ? `-${delivery.unit}` : ''}, Singapore ${delivery.postalCode || ''}`.trim();
+  const deliveryAddress = `${delivery.address_line || ''}${delivery.floor ? `, #${delivery.floor}` : ''}${delivery.unit ? `-${delivery.unit}` : ''}, Singapore ${delivery.postal_code || ''}`.trim();
 
   return `
     <div style="font-family: Arial, sans-serif; color: #222; max-width: 700px; margin: auto; margin-bottom: 24px; margin-top: 24px;">
@@ -69,7 +86,7 @@ export function fullPaymentConfirmationTemplate(order) {
       <hr />
 
       <h3 style="margin-bottom: 4px;">Delivery Details</h3>
-      <div><strong>Name:</strong> ${delivery.fullName || customer.name || ''}</div>
+      <div><strong>Name:</strong> ${delivery.full_name || customer.name || ''}</div>
       <div><strong>Contact:</strong> ${delivery.phone || customer.phone || ''}</div>
       <div><strong>Email:</strong> ${delivery.email || customer.email || ''}</div>
       <div><strong>Address:</strong> ${deliveryAddress}</div>
@@ -85,7 +102,7 @@ export function fullPaymentConfirmationTemplate(order) {
           </tr>
         </thead>
         <tbody>
-          ${items.map(item => `
+          ${emailItems.map(item => `
             <tr>
               <td>${item.quantity} x</td>
               <td>
@@ -112,12 +129,12 @@ export function fullPaymentConfirmationTemplate(order) {
             <td>Subtotal price:</td>
             <td align="right">$${(pricing.subtotal || 0).toFixed(2)}</td>
           </tr>
-          ${pricing.discounts?.length > 0 ? pricing.discounts.map(discount => `
+          ${pricing.discount > 0 ? `
             <tr>
-              <td>Discount (${discount.code}):</td>
-              <td align="right" style="color: #d32f2f;">-$${discount.amount.toFixed(2)}</td>
+              <td>Discount:</td>
+              <td align="right" style="color: #d32f2f;">-$${(pricing.discount || 0).toFixed(2)}</td>
             </tr>
-          `).join('') : ''}
+          ` : ''}
           <tr>
             <td>Total tax (GST 9% inclusive):</td>
             <td align="right">$${((pricing.total || 0) * 0.09 / 1.09).toFixed(2)}</td>
@@ -139,19 +156,25 @@ export function fullPaymentConfirmationTemplate(order) {
 }
 
 // Partial Payment Confirmation Template
-export function partialPaymentTemplate(order) {
+export function partialPaymentTemplate(orderPayload) {
   const {
-    id: confirmationNo,
-    createdAt,
-    serviceDate,
-    inputType,
-    session,
-    lineItems = [],
+    order = {},
+    items = [],
     requests = [],
-    note,
+    notes,
     pricing = {},
     delivery = {},
-    customer = {}
+    customer = {},
+    product = {},
+    productOption = {}
+  } = orderPayload;
+
+  const {
+    id: confirmationNo,
+    created_at: createdAt,
+    input_date: serviceDate,
+    input_type: inputType,
+    session
   } = order;
 
   // Format date
@@ -161,26 +184,37 @@ export function partialPaymentTemplate(order) {
     day: 'numeric'
   });
 
-  // Build items array from lineItems
-  const items = lineItems.map(item => ({
+  // Build items array from webhook items structure
+  const emailItems = items.map(item => ({
     quantity: item.quantity,
-    name: `${item.productName}${item.option?.value ? ` - ${item.option.value}` : ''}`,
-    dateSelected: serviceDate,
-    gst: `$${(item.lineTotal * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
-    price: item.lineTotal.toFixed(2)
+    name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
+    dateSelected: serviceDate || 'TBD',
+    gst: `$${(item.price * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
+    price: item.price.toFixed(2)
   }));
+
+  // Add base product if no items
+  if (emailItems.length === 0 && product.name) {
+    emailItems.push({
+      quantity: 1,
+      name: `${product.name}${productOption.label ? ` - ${productOption.label}` : ''}`,
+      dateSelected: serviceDate || 'TBD',
+      gst: `$${(productOption.price * 0.09 / 1.09).toFixed(2)}`,
+      price: productOption.price.toFixed(2)
+    });
+  }
 
   // Format special requests
   const specialRequests = [];
   if (requests?.length > 0) {
-    specialRequests.push(...requests.map(req => req.code || req.value));
+    specialRequests.push(...requests.map(req => req.label || req.code || req.value));
   }
-  if (note?.trim()) {
-    specialRequests.push(note.trim());
+  if (notes?.trim()) {
+    specialRequests.push(notes.trim());
   }
 
   // Build delivery address
-  const deliveryAddress = `${delivery.addressLine || ''}${delivery.floor ? `, #${delivery.floor}` : ''}${delivery.unit ? `-${delivery.unit}` : ''}, Singapore ${delivery.postalCode || ''}`.trim();
+  const deliveryAddress = `${delivery.address_line || ''}${delivery.floor ? `, #${delivery.floor}` : ''}${delivery.unit ? `-${delivery.unit}` : ''}, Singapore ${delivery.postal_code || ''}`.trim();
 
   return `
     <div style="font-family: Arial, sans-serif; color: #222; max-width: 700px; margin: auto;">
@@ -207,7 +241,7 @@ export function partialPaymentTemplate(order) {
       <hr />
 
       <h3 style="margin-bottom: 4px;">Delivery Details</h3>
-      <div><strong>Name:</strong> ${delivery.fullName || customer.name || ''}</div>
+      <div><strong>Name:</strong> ${delivery.full_name || customer.name || ''}</div>
       <div><strong>Contact:</strong> ${delivery.phone || customer.phone || ''}</div>
       <div><strong>Email:</strong> ${delivery.email || customer.email || ''}</div>
       <div><strong>Address:</strong> ${deliveryAddress}</div>
@@ -223,7 +257,7 @@ export function partialPaymentTemplate(order) {
           </tr>
         </thead>
         <tbody>
-          ${items.map(item => `
+          ${emailItems.map(item => `
             <tr>
               <td>${item.quantity} x</td>
               <td>
@@ -250,12 +284,12 @@ export function partialPaymentTemplate(order) {
             <td>Subtotal price:</td>
             <td align="right">$${(pricing.subtotal || 0).toFixed(2)}</td>
           </tr>
-          ${pricing.discounts?.length > 0 ? pricing.discounts.map(discount => `
+          ${pricing.discount > 0 ? `
             <tr>
-              <td>Discount (${discount.code}):</td>
-              <td align="right" style="color: #d32f2f;">-$${discount.amount.toFixed(2)}</td>
+              <td>Discount:</td>
+              <td align="right" style="color: #d32f2f;">-$${(pricing.discount || 0).toFixed(2)}</td>
             </tr>
-          `).join('') : ''}
+          ` : ''}
           <tr>
             <td>Total tax (GST 9% inclusive):</td>
             <td align="right">$${((pricing.total || 0) * 0.09 / 1.09).toFixed(2)}</td>

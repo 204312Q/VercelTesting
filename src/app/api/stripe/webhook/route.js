@@ -142,9 +142,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       hasHtml: !!html
     });
 
-    const emailEndpoint = process.env.NEXT_PUBLIC_BASE_URL
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/email`
-      : 'https://myproject-eta-lovat.vercel.app/api/email';
+    const emailEndpoint = 'https://myproject-eta-lovat.vercel.app/api/email';
 
     console.log('🌐 Email endpoint:', emailEndpoint);
     console.log('📬 Sending email request:', {

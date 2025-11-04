@@ -140,9 +140,13 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       itemsLength: orderPayload.items?.length || 0,
       firstItem: orderPayload.items?.[0],
       hasProduct: !!orderPayload.product,
-      hasProductOption: !!orderPayload.productOption
+      hasProductOption: !!orderPayload.productOption,
+      delivery: orderPayload.delivery,
+      pricing: orderPayload.pricing,
+      fullPayload: JSON.stringify(orderPayload, null, 2)
     });
 
+    // Now using raw dbPayload structure (before transformation)
     const emailData = {
       order: orderPayload.order,
       delivery: orderPayload.delivery,
@@ -155,6 +159,17 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       product: orderPayload.product || {},
       productOption: orderPayload.productOption || {}
     };
+
+    console.log('📧 Email data being passed to template:', {
+      hasOrder: !!emailData.order,
+      hasDelivery: !!emailData.delivery,
+      deliveryFields: emailData.delivery ? Object.keys(emailData.delivery) : [],
+      hasItems: !!emailData.items,
+      itemsCount: emailData.items?.length || 0,
+      hasPricing: !!emailData.pricing,
+      pricingFields: emailData.pricing ? Object.keys(emailData.pricing) : [],
+      firstItem: emailData.items?.[0]
+    });
 
     const html = isPartialPayment
       ? partialPaymentTemplate(emailData)
@@ -484,8 +499,8 @@ export async function POST(req) {
           create: { order_id: orderId, payload: readPayload, export_status: 'PENDING' },
         });
 
-        // UPDATED: Actually send the email with real data
-        await sendOrderConfirmationEmail(readPayload, orderId);
+        // UPDATED: Send email with the raw dbPayload structure (before transformation)
+        await sendOrderConfirmationEmail(dbPayload, orderId);
         // void sendOrderConfirmationEmail(payload);
         // void enqueueDynamicsSync(orderId); // sets export_status late
       }

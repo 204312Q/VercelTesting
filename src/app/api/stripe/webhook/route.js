@@ -95,16 +95,16 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     console.log('🔍 sendOrderConfirmationEmail called:', {
       orderId,
       hasOrderPayload: !!orderPayload,
-      hasDelivery: !!orderPayload?.order?.delivery,
+      hasDelivery: !!orderPayload?.delivery,
       hasOrder: !!orderPayload?.order,
-      email: orderPayload?.order?.delivery?.email,
+      email: orderPayload?.delivery?.email,
       paymentPlan: orderPayload?.order?.paymentPlan
     });
 
-    if (!orderPayload?.order?.delivery?.email) {
+    if (!orderPayload?.delivery?.email) {
       console.log('⚠️ No email address found in payload:', {
-        delivery: orderPayload?.order?.delivery,
-        customer: orderPayload?.order?.customer
+        delivery: orderPayload?.delivery,
+        customer: orderPayload?.customer
       });
       return;
     }
@@ -184,10 +184,10 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
 
     console.log('🌐 Email endpoint:', emailEndpoint);
     console.log('📬 Sending email request:', {
-      to: orderPayload.order.delivery.email,
+      to: orderPayload.delivery.email,
       subject: `Order Confirmation - ${orderPayload.order.id}`,
       bodySize: JSON.stringify({
-        to: orderPayload.order.delivery.email,
+        to: orderPayload.delivery.email,
         subject: `Order Confirmation - ${orderPayload.order.id}`,
         html,
       }).length
@@ -197,7 +197,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: orderPayload.order.delivery.email,
+        to: orderPayload.delivery.email,
         subject: `Order Confirmation - ${orderPayload.order.id}`,
         html,
       }),
@@ -219,7 +219,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     });
 
     if (response.ok) {
-      console.log(`✅ Order confirmation email sent to ${orderPayload.order.delivery.email}`);
+      console.log(`✅ Order confirmation email sent to ${orderPayload.delivery.email}`);
 
       // Mark email as sent to prevent duplicates
       await prisma.orderConfirmation.update({

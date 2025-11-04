@@ -30,22 +30,26 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
   });
 
   // Build items array from webhook items structure
-  const emailItems = items.map(item => ({
-    quantity: item.quantity,
-    name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
-    dateSelected: serviceDate || 'TBD',
-    gst: `$${(item.price * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
-    price: item.price.toFixed(2)
-  }));
+  const emailItems = items.map(item => {
+    const itemPrice = Number(item.price) || 0;
+    return {
+      quantity: item.quantity || 1,
+      name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
+      dateSelected: serviceDate || 'TBD',
+      gst: `$${(itemPrice * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
+      price: itemPrice.toFixed(2)
+    };
+  });
 
   // Add base product if no items
   if (emailItems.length === 0 && product.name) {
+    const productPrice = Number(productOption.price) || 0;
     emailItems.push({
       quantity: 1,
       name: `${product.name}${productOption.label ? ` - ${productOption.label}` : ''}`,
       dateSelected: serviceDate || 'TBD',
-      gst: `$${(productOption.price * 0.09 / 1.09).toFixed(2)}`,
-      price: productOption.price.toFixed(2)
+      gst: `$${(productPrice * 0.09 / 1.09).toFixed(2)}`,
+      price: productPrice.toFixed(2)
     });
   }
 
@@ -185,22 +189,26 @@ export function partialPaymentTemplate(orderPayload) {
   });
 
   // Build items array from webhook items structure
-  const emailItems = items.map(item => ({
-    quantity: item.quantity,
-    name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
-    dateSelected: serviceDate || 'TBD',
-    gst: `$${(item.price * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
-    price: item.price.toFixed(2)
-  }));
+  const emailItems = items.map(item => {
+    const itemPrice = Number(item.price) || 0;
+    return {
+      quantity: item.quantity || 1,
+      name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
+      dateSelected: serviceDate || 'TBD',
+      gst: `$${(itemPrice * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
+      price: itemPrice.toFixed(2)
+    };
+  });
 
   // Add base product if no items
   if (emailItems.length === 0 && product.name) {
+    const productPrice = Number(productOption.price) || 0;
     emailItems.push({
       quantity: 1,
       name: `${product.name}${productOption.label ? ` - ${productOption.label}` : ''}`,
       dateSelected: serviceDate || 'TBD',
-      gst: `$${(productOption.price * 0.09 / 1.09).toFixed(2)}`,
-      price: productOption.price.toFixed(2)
+      gst: `$${(productPrice * 0.09 / 1.09).toFixed(2)}`,
+      price: productPrice.toFixed(2)
     });
   }
 

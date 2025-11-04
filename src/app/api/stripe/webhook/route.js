@@ -134,22 +134,26 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     });
 
     // FLATTEN THE DATA STRUCTURE FOR EMAIL TEMPLATES
+    console.log('🔧 Raw orderPayload structure:', {
+      keys: Object.keys(orderPayload),
+      hasItems: !!orderPayload.items,
+      itemsLength: orderPayload.items?.length || 0,
+      firstItem: orderPayload.items?.[0],
+      hasProduct: !!orderPayload.product,
+      hasProductOption: !!orderPayload.productOption
+    });
+
     const emailData = {
       order: orderPayload.order,
-      delivery: orderPayload.order.delivery,
-      customer: orderPayload.order.customer,
-      items: orderPayload.order.lineItems || [],
-      pricing: orderPayload.order.pricing,
-      requests: orderPayload.order.requests || [],
-      notes: orderPayload.order.note,
-      // Add product and productOption from the lineItems if available
-      product: orderPayload.order.lineItems?.[0]?.productName ? {
-        name: orderPayload.order.lineItems[0].productName
-      } : {},
-      productOption: orderPayload.order.lineItems?.[0]?.option ? {
-        label: orderPayload.order.lineItems[0].option.label,
-        price: orderPayload.order.lineItems[0].unitPriceCents / 100
-      } : {}
+      delivery: orderPayload.delivery,
+      customer: orderPayload.customer,
+      items: orderPayload.items || [],
+      pricing: orderPayload.pricing,
+      requests: orderPayload.requests || [],
+      notes: orderPayload.notes,
+      // Add product and productOption from the main order data
+      product: orderPayload.product || {},
+      productOption: orderPayload.productOption || {}
     };
 
     const html = isPartialPayment

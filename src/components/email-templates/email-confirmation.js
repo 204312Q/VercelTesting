@@ -111,7 +111,6 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
               <td>${item.quantity} x</td>
               <td>
                 <strong>${item.name}</strong> <br/>
-                <span style="font-size: 13px;">Date Selected: ${item.dateSelected}</span>
               </td>
               <td>${item.gst}</td>
               <td>$${item.price}</td>
@@ -121,8 +120,9 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
       </table>
 
       <div style="margin-bottom: 12px;">
-        <strong>Service Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
-        <strong>Session:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : 'All Day'}
+        <strong>Selected Date Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
+        <strong>Delivery Date:</strong> ${serviceDate}<br/>
+        <strong>Start with:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : 'All Day'}
         ${specialRequests.length > 0 ? `<br/><strong>Special Requests:</strong> ${specialRequests.join('; ')}` : ''}
       </div>
 

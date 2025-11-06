@@ -29,27 +29,39 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
     day: 'numeric'
   });
 
-  // Build items array from webhook items structure
-  const emailItems = items.map(item => {
-    const itemPrice = Number(item.price) || 0;
-    return {
-      quantity: item.quantity || 1,
-      name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
-      dateSelected: serviceDate || 'TBD',
-      gst: `$${(itemPrice * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
-      price: itemPrice.toFixed(2)
-    };
-  });
+  // Format service date properly
+  const formattedServiceDate = serviceDate ? new Date(serviceDate).toLocaleDateString('en-SG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : 'TBD';
 
-  // Add base product if no items
-  if (emailItems.length === 0 && product.name) {
+  // Build items array from webhook items structure
+  const emailItems = [];
+  
+  // Always add the base product first
+  if (product.name && productOption.label) {
     const productPrice = Number(productOption.price) || 0;
     emailItems.push({
       quantity: 1,
-      name: `${product.name}${productOption.label ? ` - ${productOption.label}` : ''}`,
-      dateSelected: serviceDate || 'TBD',
+      name: `${product.name} - ${productOption.label}`,
+      dateSelected: formattedServiceDate,
       gst: `$${(productPrice * 0.09 / 1.09).toFixed(2)}`,
       price: productPrice.toFixed(2)
+    });
+  }
+  
+  // Then add all additional items (bundles, add-ons, etc.)
+  if (items && items.length > 0) {
+    items.forEach(item => {
+      const itemPrice = Number(item.price) || 0;
+      emailItems.push({
+        quantity: item.quantity || 1,
+        name: `${item.product?.name || 'Product'}${item.option?.label ? ` - ${item.option.label}` : ''}`,
+        dateSelected: formattedServiceDate,
+        gst: `$${(itemPrice * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
+        price: itemPrice.toFixed(2)
+      });
     });
   }
 
@@ -121,7 +133,7 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
 
       <div style="margin-bottom: 12px;">
         <strong>Selected Date Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
-        <strong>Delivery Date:</strong> ${serviceDate}<br/>
+        <strong>Delivery Date:</strong> ${formattedServiceDate}<br/>
         <strong>Start with:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : 'All Day'}
         ${specialRequests.length > 0 ? `<br/><strong>Special Requests:</strong> ${specialRequests.join('; ')}` : ''}
       </div>
@@ -188,27 +200,39 @@ export function partialPaymentTemplate(orderPayload) {
     day: 'numeric'
   });
 
-  // Build items array from webhook items structure
-  const emailItems = items.map(item => {
-    const itemPrice = Number(item.price) || 0;
-    return {
-      quantity: item.quantity || 1,
-      name: `${item.product?.name || product.name || 'Product'}${item.option?.value ? ` - ${item.option.value}` : ''}`,
-      dateSelected: serviceDate || 'TBD',
-      gst: `$${(itemPrice * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
-      price: itemPrice.toFixed(2)
-    };
-  });
+  // Format service date properly
+  const formattedServiceDate = serviceDate ? new Date(serviceDate).toLocaleDateString('en-SG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : 'TBD';
 
-  // Add base product if no items
-  if (emailItems.length === 0 && product.name) {
+  // Build items array from webhook items structure
+  const emailItems = [];
+  
+  // Always add the base product first
+  if (product.name && productOption.label) {
     const productPrice = Number(productOption.price) || 0;
     emailItems.push({
       quantity: 1,
-      name: `${product.name}${productOption.label ? ` - ${productOption.label}` : ''}`,
-      dateSelected: serviceDate || 'TBD',
+      name: `${product.name} - ${productOption.label}`,
+      dateSelected: formattedServiceDate,
       gst: `$${(productPrice * 0.09 / 1.09).toFixed(2)}`,
       price: productPrice.toFixed(2)
+    });
+  }
+  
+  // Then add all additional items (bundles, add-ons, etc.)
+  if (items && items.length > 0) {
+    items.forEach(item => {
+      const itemPrice = Number(item.price) || 0;
+      emailItems.push({
+        quantity: item.quantity || 1,
+        name: `${item.product?.name || 'Product'}${item.option?.label ? ` - ${item.option.label}` : ''}`,
+        dateSelected: formattedServiceDate,
+        gst: `$${(itemPrice * 0.09 / 1.09).toFixed(2)}`, // 9% GST inclusive
+        price: itemPrice.toFixed(2)
+      });
     });
   }
 

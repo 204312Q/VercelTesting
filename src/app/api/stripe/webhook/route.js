@@ -109,21 +109,15 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       return;
     }
 
-    // Check if email was already sent (add deduplication)
+    // Check if order confirmation exists
     const existingConfirmation = await prisma.orderConfirmation.findUnique({
       where: { order_id: orderId }
     });
 
     console.log('📋 Order confirmation record:', {
       exists: !!existingConfirmation,
-      emailSent: existingConfirmation?.email_sent,
       exportStatus: existingConfirmation?.export_status
     });
-
-    if (existingConfirmation?.email_sent) {
-      console.log(`📧 Email already sent for order ${orderId}, skipping duplicate`);
-      return;
-    }
 
     // Determine email template based on payment plan
     const isPartialPayment = orderPayload.order?.paymentPlan === 'PARTIAL';
@@ -221,13 +215,11 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     if (response.ok) {
       console.log(`✅ Order confirmation email sent to ${orderPayload.delivery.email}`);
 
-      // Mark email as sent to prevent duplicates
+      // Update the order confirmation record to clear any errors
       await prisma.orderConfirmation.update({
         where: { order_id: orderId },
         data: {
-          email_sent: true,
-          email_sent_at: new Date(),
-          last_error: null
+          last_error: null // Clear any previous errors since email was successful
         }
       });
       console.log('✅ Email status updated in database');

@@ -148,7 +148,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       items: orderPayload.items || [],
       pricing: orderPayload.pricing,
       requests: orderPayload.requests || [],
-      notes: orderPayload.notes,
+      notes: orderPayload.notes?.text || orderPayload.notes, // Extract text if notes is an object
       // Add product and productOption from the main order data
       product: orderPayload.product || {},
       productOption: orderPayload.productOption || {}

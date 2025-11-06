@@ -70,7 +70,7 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
   if (requests?.length > 0) {
     specialRequests.push(...requests.map(req => req.label || req.code || req.value));
   }
-  if (notes?.trim()) {
+  if (notes && typeof notes === 'string' && notes.trim()) {
     specialRequests.push(notes.trim());
   }
 
@@ -241,7 +241,7 @@ export function partialPaymentTemplate(orderPayload) {
   if (requests?.length > 0) {
     specialRequests.push(...requests.map(req => req.label || req.code || req.value));
   }
-  if (notes?.trim()) {
+  if (notes && typeof notes === 'string' && notes.trim()) {
     specialRequests.push(notes.trim());
   }
 

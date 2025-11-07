@@ -245,6 +245,9 @@ export function partialPaymentTemplate(orderPayload) {
   if (notes && typeof notes === 'string' && notes.trim()) {
     specialRequests.push(notes.trim());
   }
+  if (order.riceOption) {
+    specialRequests.push(`Rice Option: ${order.riceOption}`);
+  }
 
   // Build delivery address
   const deliveryAddress = `${delivery.address_line || ''}${delivery.floor ? `, #${delivery.floor}` : ''}${delivery.unit ? `-${delivery.unit}` : ''}, Singapore ${delivery.postal_code || ''}`.trim();

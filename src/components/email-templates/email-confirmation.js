@@ -74,7 +74,15 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
     specialRequests.push(notes.trim());
   }
   if (order.riceOption) {
-    specialRequests.push(`Rice Option: ${order.riceOption}`);
+    if (order.riceOption === 'WHITE'){
+      specialRequests.push(`All White Rice`);
+    }
+    else if (order.riceOption === 'BROWN'){
+      specialRequests.push(`All Brown Rice`);
+    }
+    else{
+      specialRequests.push(`No Rice Preference`);
+    }
   }
 
   // Build delivery address

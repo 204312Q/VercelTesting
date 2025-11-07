@@ -68,7 +68,7 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
   // Format special requests
   const specialRequests = [];
   if (requests?.length > 0) {
-    specialRequests.push(...requests.map(req => req.label || req.code || req.value));
+    specialRequests.push(...requests.map(req => req.code ));
   }
   if (notes && typeof notes === 'string' && notes.trim()) {
     specialRequests.push(notes.trim());
@@ -239,7 +239,7 @@ export function partialPaymentTemplate(orderPayload) {
   // Format special requests
   const specialRequests = [];
   if (requests?.length > 0) {
-    specialRequests.push(...requests.map(req => req.label || req.code || req.value));
+    specialRequests.push(...requests.map(req => req.code ));
   }
   if (notes && typeof notes === 'string' && notes.trim()) {
     specialRequests.push(notes.trim());
@@ -304,8 +304,8 @@ export function partialPaymentTemplate(orderPayload) {
       </table>
 
       <div style="margin-bottom: 12px;">
-        <strong>Service Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
-        <strong>Session:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : 'All Day'}
+        <strong>Date Selection Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
+        <strong>Session:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : ''}
         ${specialRequests.length > 0 ? `<br/><strong>Special Requests:</strong> ${specialRequests.join('; ')}` : ''}
       </div>
 

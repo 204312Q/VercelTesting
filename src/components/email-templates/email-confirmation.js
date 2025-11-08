@@ -146,8 +146,7 @@ export function fullPaymentConfirmationTemplate(orderPayload) {
         ${specialRequests.length > 0 ? `<br/><strong>Special Requests:</strong> ${specialRequests.join('; ')}` : ''} <br/></br/>
         <strong>Date Selection Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
         <strong>Delivery Date:</strong> ${formattedServiceDate}<br/>
-        <strong>Start with:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : ''}
-        
+        ${inputType === 'EDD' ? `<strong>Start with:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : ''}`  : ''}
       </div>
 
       <h3 style="margin-bottom: 4px;">Payment Details</h3>
@@ -317,7 +316,6 @@ export function partialPaymentTemplate(orderPayload) {
               <td>${item.quantity} x</td>
               <td>
                 <strong>${item.name}</strong><br/>
-                <span style="font-size: 13px;">Date Selected: ${item.dateSelected}</span>
               </td>
               <td>${item.gst}</td>
               <td>$${item.price}</td>
@@ -327,9 +325,10 @@ export function partialPaymentTemplate(orderPayload) {
       </table>
 
       <div style="margin-bottom: 12px;">
-      ${specialRequests.length > 0 ? `<br/><strong>Special Requests:</strong> ${specialRequests.join('; ')}` : ''} <br/></br/>
+        ${specialRequests.length > 0 ? `<br/><strong>Special Requests:</strong> ${specialRequests.join('; ')}` : ''} <br/></br/>
         <strong>Date Selection Type:</strong> ${inputType === 'EDD' ? 'Expected Delivery Date' : 'Confirmed Start Date'}<br/>
         <strong>Delivery Date:</strong> ${formattedServiceDate}<br/>
+        ${inputType === 'EDD' ? `<strong>Start with:</strong> ${session ? session.charAt(0).toUpperCase() + session.slice(1).toLowerCase() : ''}`  : ''}
       </div>
 
       <h3 style="margin-bottom: 4px;">Payment Details</h3>

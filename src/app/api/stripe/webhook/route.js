@@ -415,6 +415,7 @@ export async function POST(req) {
     // --------------------------------------------------------------------------------
     // -------------------------------- SUCCESS BRANCH --------------------------------
     // --------------------------------------------------------------------------------
+    //For Card Payments
     case 'checkout.session.completed': {
       const s = event.data.object;
 
@@ -504,6 +505,8 @@ export async function POST(req) {
       break;
     }
 
+  
+    // for PAYNOW payments
     case 'checkout.session.async_payment_succeeded': {
       const s = event.data.object;
       const enumMethod = await inferEnumMethodFromStripe(stripe, s);
@@ -536,8 +539,7 @@ export async function POST(req) {
           });
 
 
-          // UPDATED: Actually send the email with real data
-          // await sendOrderConfirmationEmail(readPayload);
+          await sendOrderConfirmationEmail(readPayload, orderId);
 
           // void sendOrderConfirmationEmail(payload);
           // void enqueueDynamicsSync(orderId); // sets export_status late

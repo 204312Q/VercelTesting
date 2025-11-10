@@ -1,10 +1,7 @@
-// export * from './_job';
 
 export * from './_mock';
 
 export * from './_user';
-
-// export * from './_tour';
 
 export * from './_blog';
 
@@ -23,3 +20,5 @@ export * from './_product';
 export * from './_overview';
 
 export * from './_calendar';
+
+export { ORDER_STATUS_OPTIONS, PAYMENT_STATUS_OPTIONS } from './_order';

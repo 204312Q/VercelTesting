@@ -4,6 +4,8 @@
 
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
+import { useSecurity } from '../../hooks/useSecurity';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
@@ -17,6 +19,9 @@ export function ProductDeliveryForm({
   discountAmount = 0,
   basePrice = 0,
 }) {
+
+  const { sanitizers } = useSecurity();
+
   const [deliveryData, setDeliveryData] = useState({
     fullName: '',
     phone: '',
@@ -54,7 +59,32 @@ export function ProductDeliveryForm({
   // Handle input changes
   const handleInputChange = useCallback(
     (field) => (e) => {
-      const value = e.target.value;
+      let value = e.target.value;
+
+      // Sanitize input based on field type
+      switch (field) {
+        case 'fullName':
+          value = sanitizers.name(value);
+          break;
+        case 'email':
+          value = sanitizers.email(value);
+          break;
+        case 'phone':
+          value = sanitizers.phone(value);
+          break;
+        case 'address':
+          value = sanitizers.address(value);
+          break;
+        case 'postalCode':
+          value = sanitizers.postalCode(value);
+          break;
+        case 'floor':
+        case 'unit':
+          value = sanitizers.generic(value, { maxLength: 10 });
+          break;
+        default:
+          value = sanitizers.generic(value);
+      }
 
       setDeliveryData((prev) => ({ ...prev, [field]: value }));
       setTouchedFields((prev) => ({ ...prev, [field]: true }));
@@ -68,8 +98,9 @@ export function ProductDeliveryForm({
         });
       }
     },
-    [errors],
+    [errors, sanitizers], // Add sanitizers to dependencies
   );
+
 
   // Handle payment method change
   const handlePaymentMethodChange = useCallback((method) => {

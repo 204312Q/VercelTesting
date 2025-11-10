@@ -92,6 +92,7 @@
     "i18next": "^24.0.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-resources-to-backend": "^1.2.1",
+    "isomorphic-dompurify": "^2.31.0",
     "lowlight": "^3.2.0",
     "mapbox-gl": "^3.4.0",
     "minimal-shared": "^1.0.3",

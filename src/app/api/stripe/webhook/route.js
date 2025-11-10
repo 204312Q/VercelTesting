@@ -154,7 +154,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
       productOption: orderPayload.productOption || {}
     };
 
-    console.log('📧 Email data being passed to template:', {
+    console.log('Email data being passed to template:', {
       hasOrder: !!emailData.order,
       hasDelivery: !!emailData.delivery,
       deliveryFields: emailData.delivery ? Object.keys(emailData.delivery) : [],

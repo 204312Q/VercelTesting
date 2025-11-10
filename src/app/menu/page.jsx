@@ -1,6 +1,7 @@
+import { MenuView } from 'src/sections/menu/view';
 
 // ----------------------------------------------------------------------
 
-export default function Page() {
-    return <h1>Menu</h1>;
+export default function MenuPage() {
+    return <MenuView />;
 }

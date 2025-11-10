@@ -1,15 +1,18 @@
 'use client';
-
 import { m } from 'framer-motion';
 import { varAlpha } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
 import Masonry from '@mui/lab/Masonry';
 import Grid from '@mui/material/Grid2';
+import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
+
+import { fDate } from 'src/utils/format-time';
 
 import { _testimonials } from 'src/_mock';
 import { CONFIG } from 'src/global-config';
@@ -17,14 +20,15 @@ import { CONFIG } from 'src/global-config';
 import { Iconify } from 'src/components/iconify';
 import { varFade, MotionViewport } from 'src/components/animate';
 
-// import { fDate } from 'src/utils/format-time';
-// import Avatar from '@mui/material/Avatar';
-// import Rating from '@mui/material/Rating';
 // ----------------------------------------------------------------------
 
 export function AboutTestimonials({ sx, ...other }) {
   const renderLink = () => (
-    <Button color="primary" endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}>
+    <Button
+      color="primary"
+      endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+      sx={{ color: 'common.white' }}
+    >
       Read more
     </Button>
   );
@@ -88,8 +92,8 @@ export function AboutTestimonials({ sx, ...other }) {
         (theme) => ({
           ...theme.mixins.bgGradient({
             images: [
-              `linear-gradient(0deg, ${varAlpha(theme.vars.palette.grey['900Channel'], 0.7)}, ${varAlpha(theme.vars.palette.grey['900Channel'], 0.6)})`,
-              `url(${CONFIG.assetsDir}/assets/background/aboutus.png)`,
+              `linear-gradient(0deg, ${varAlpha(theme.vars.palette.grey['900Channel'], 0.5)}, ${varAlpha(theme.vars.palette.grey['900Channel'], 0.6)})`,
+              `url(${CONFIG.assetsDir}/assets/background/confinement_group_shot.avif)`,
             ],
           }),
           overflow: 'hidden',

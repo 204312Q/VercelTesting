@@ -2,6 +2,8 @@
 
 import { useMemo, useEffect, useCallback, useState } from 'react';
 
+import { useSecurity } from '../../hooks/useSecurity';
+
 import Grid from '@mui/material/Grid';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
@@ -23,16 +25,18 @@ const RICE_LABEL_MAP = {
   BROWN: 'All Brown Rice',
   NO_PREF: 'No Preference',
 };
-const RICE_LABELS = Object.values(RICE_LABEL_MAP); 
+const RICE_LABELS = Object.values(RICE_LABEL_MAP);
 
 export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, value }) {
+
+  const { sanitizers } = useSecurity();
 
   const [options, setOptions] = useState([]); // [{id,label}]
   const [selected, setSelected] = useState(new Map()); // id -> bool
   const [note, setNote] = useState('');
   const [expanded, setExpanded] = useState(false);
 
-   // Enum-driven rice option (default NO_PREF)
+  // Enum-driven rice option (default NO_PREF)
   const [riceOption, setRiceOption] = useState('NO_PREF');
 
   useEffect(() => {
@@ -59,6 +63,7 @@ export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, va
   }, [onOptionsChange]);
 
   // Emit in the exact backend shape your /requests route expects
+  // Update the useEffect that emits data (around line 63)
   useEffect(() => {
     const requests = [...selected.entries()]
       .filter(([, v]) => v === true)
@@ -66,6 +71,8 @@ export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, va
         specialRequestId: Number(id),
         value: true,
       }));
+
+    // Note is already sanitized when set, so it's safe to emit
     onRequestChange?.({ requests, note, riceOption });
   }, [selected, note, riceOption, onRequestChange]);
 
@@ -78,8 +85,8 @@ export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, va
   const countSelected = useMemo(() => {
     const presets = [...selected.values()].filter(Boolean).length;
     const n = presets + (note.trim() ? 1 : 0) + (riceOption !== 'NO_PREF' ? 1 : 0);
-    return n; 
-}, [selected, note, riceOption]);
+    return n;
+  }, [selected, note, riceOption]);
 
   const toggle = useCallback((id) => {
     id = Number(id);
@@ -117,12 +124,12 @@ export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, va
       >
         <AccordionSummary
           expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
-          //   sx={{
-          //     py: 0.5,
-          //     '& .MuiAccordionSummary-content': {
-          //       alignItems: 'center',
-          //     },
-          //   }}
+        //   sx={{
+        //     py: 0.5,
+        //     '& .MuiAccordionSummary-content': {
+        //       alignItems: 'center',
+        //     },
+        //   }}
         >
           <Typography variant="h6" sx={{ ml: 1 }}>
             Special Requests {hasRequests ? `(${countSelected})` : ''}
@@ -190,7 +197,11 @@ export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, va
               rows={3}
               placeholder="Enter any additional special requests here..."
               value={note}
-              onChange={(e) => setNote(e.target.value)}
+              onChange={(e) => {
+                // Sanitize the input before setting state
+                const sanitizedValue = sanitizers.note(e.target.value);
+                setNote(sanitizedValue);
+              }}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': { borderColor: 'grey.300' },
@@ -201,7 +212,7 @@ export function ProductSpecialRequestForm({ onRequestChange, onOptionsChange, va
             />
             {note && (
               <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                Character count: {note.length}
+                Character count: {note.length}/{sanitizers.config?.INPUT_LIMITS?.NOTE_MAX_LENGTH || 200}
               </Typography>
             )}
           </Box>

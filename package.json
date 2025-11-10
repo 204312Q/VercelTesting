@@ -89,6 +89,7 @@
     "firebase": "^11.0.2",
     "formidable": "^3.5.4",
     "framer-motion": "^11.13.1",
+    "i": "^0.3.7",
     "i18next": "^24.0.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-resources-to-backend": "^1.2.1",

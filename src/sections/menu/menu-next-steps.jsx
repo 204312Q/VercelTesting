@@ -37,7 +37,7 @@ export function MenuNextStep({ sx, ...other }) {
             {...other}
         >
             <Typography variant="h2" sx={{ my: 3, color: 'primary.main', textAlign: 'center' }}>
-                What's the next step?
+                What&apos;s the next step?
             </Typography>
 
             <Container sx={{ mb: 4 }}>

@@ -45,6 +45,7 @@ export const paths = {
     details: (title) => `/post/${kebabCase(title)}`,
     demo: { details: `/post/${kebabCase(MOCK_TITLE)}` },
   },
+  menu: '/menu',
   // AUTH
   auth: {
     amplify: {

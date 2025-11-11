@@ -43,7 +43,7 @@ export function HomeMenu({ sx, ...other }) {
             variant="contained"
             target="_blank"
             rel="noopener"
-            href={paths.minimalStore}
+            href={paths.menu}
             component="a"
             sx={{ minWidth: 240 }}
           >

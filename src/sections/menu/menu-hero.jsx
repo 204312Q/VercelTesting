@@ -1,4 +1,5 @@
 'use client';
+
 import Box from '@mui/material/Box';
 import Image from 'next/image';
 import { useMediaQuery, useTheme } from '@mui/material';

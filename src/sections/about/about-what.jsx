@@ -1,4 +1,5 @@
 'use client';
+
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -84,14 +85,14 @@ export function AboutWhat({ sx, ...other }) {
             component={m.p}
             variants={varFade('inUp')}
             sx={{
-              color: 'common.white', // Changed from 'text.secondary' to match testimonial
+              color: 'common.white',
               fontSize: { xs: 14, md: 16 },
               lineHeight: 1.6,
             }}
           >
             Chilli Padi started off as a restaurant which was founded in 1997 and has been synonymous with authentic Peranakan Cuisine, rich heritage and gourmet excellence. We have since built an island-wide footprint with our catering arm, flagship restaurant and chain of cafeterias, collectively known as Chilli Padi Holding.
             <br /><br />
-            Over the years, Chilli Padi has received numerous accolades including the coveted Singapore's Best Restaurant by Singapore Tatler, Asia Pacific Brands Award and Promising SME500, among others. In particular, the Singapore Tourism Board proudly recommends the international media to Chilli Padi's cuisine as a fine exemplary of Singapore's rich food heritage.
+            Over the years, Chilli Padi has received numerous accolades including the coveted Singapore&apos;s Best Restaurant by Singapore Tatler, Asia Pacific Brands Award and Promising SME500, among others. In particular, the Singapore Tourism Board proudly recommends the international media to Chilli Padi&apos;s cuisine as a fine exemplary of Singapore&apos;s rich food heritage.
             <br /><br />
             In 2011, we initially offered our confinement meals at our restaurant. Encouraged by the positive response and demand for our meals, we expanded our portfolio to cater confinement meal catering service aimed to aid mummies in their postpartum recovery.
           </Typography>

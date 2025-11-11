@@ -26,7 +26,6 @@ export function AboutHero({ sx, ...other }) {
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
-    >
-    </Box>
+    />
   );
 }

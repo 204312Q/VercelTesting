@@ -22,9 +22,7 @@ export default function MenuPage() {
     const [menu, setMenu] = useState({ lunchDishes: [], dinnerDishes: [] });
 
     // Helper to get the date start
-    const getActualWeekStart = (baseDate, weekIndex) => {
-        return addDays(baseDate, (weekIndex - 1) * 7);
-    };
+    const getActualWeekStart = (baseDate, weekIndex) => addDays(baseDate, (weekIndex - 1) * 7);
 
     useEffect(() => {
         setSelectedWeek(1);
@@ -58,18 +56,18 @@ export default function MenuPage() {
                 [selectedWeek]: firstDay,
             }));
         }
-    }, [startDate, selectedWeek]);
+    }, [startDate, selectedWeek, selectedDayByWeek, startDateStr]);
 
     useEffect(() => {
         if (!selectedDay) return;
         const { recoveryIndex, nourishIndex } = getMenuIndexesForDate(selectedDay.rawDate, []);
         const isRecoveryWeek = selectedWeek === 1;
 
-        const menu = isRecoveryWeek
+        const selectedMenu = isRecoveryWeek
             ? recoveryMenuPool[recoveryIndex] ?? { lunchDishes: [], dinnerDishes: [] }
             : nourishMenuPool[nourishIndex] ?? { lunchDishes: [], dinnerDishes: [] };
 
-        setMenu(menu);
+        setMenu(selectedMenu);
     }, [selectedDay, selectedWeek, startDate]);
 
     return (

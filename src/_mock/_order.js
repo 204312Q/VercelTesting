@@ -129,7 +129,7 @@ export const _orders = Array.from({ length: 20 }, (_, index) => {
   const edd_date = isEDD ? generateDate(index + 5) : null;
 
   // Special requests (preset + custom)
-  const special_requests = PRESET_REQUESTS.filter((_, i) => (index + i) % 4 === 0);
+  const special_requests = PRESET_REQUESTS.filter((request, i) => (index + i) % 4 === 0);
   const special_request_notes =
     index % 4 === 0
       ? 'Please deliver before noon. No ginger in any dish.'

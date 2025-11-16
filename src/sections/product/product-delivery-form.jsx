@@ -343,7 +343,7 @@ const PaymentMethodSection = ({
           isSelected={paymentMethod === 'partial'}
           onClick={() => onPaymentMethodChange('partial')}
           title="Partial (Deposit)"
-          description={`Pay $${paymentAmounts.depositAmount} now, balance $${paymentAmounts.balancePayable.toFixed(2)} pay later`}
+          description=""
         />
       )}
     </Box>

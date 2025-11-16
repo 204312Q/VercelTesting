@@ -12,7 +12,7 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export function CheckoutOrderCancelled({ onResetCart, ...other }) {
+export function CheckoutOrderCancelled({ onResetCart, onTryAgain, ...other }) {
     return (
         <Dialog
             fullWidth
@@ -38,27 +38,38 @@ export function CheckoutOrderCancelled({ onResetCart, ...other }) {
                     gap: 3,
                 }}
             >
-                <Typography variant="h4">Something went wrong!</Typography>
+                <Typography variant="h4">Payment has been cancelled</Typography>
 
                 <OrderFailedIllustration />
 
                 <Typography color="text.secondary">
-                    We can&apos;t process your order at this time.
+                    We couldn't process your payment
                     <br />
-                    Please try again or contact support if the problem persists.
+                    Please try again
                 </Typography>
 
-                <Button
-                    component={RouterLink}
-                    href={paths.product.root}
-                    size="large"
-                    variant="contained"
-                    onClick={onResetCart}
-                    startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
-                    sx={{ mt: 2 }}
-                >
-                    Continue Shopping
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+                    <Button
+                        component={RouterLink}
+                        href={paths.product.root}
+                        size="large"
+                        variant="outlined"
+                        startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
+                    >
+                        Go back
+                    </Button>
+
+                    {/* {onTryAgain && (
+                        <Button
+                            onClick={onTryAgain}
+                            size="large"
+                            variant="contained"
+                            startIcon={<Iconify icon="eva:refresh-fill" />}
+                        >
+                            Try Again
+                        </Button>
+                    )} */}
+                </Box>
             </Box>
         </Dialog>
     );

@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckoutOrderCancelled } from 'src/sections/checkout/checkout-order-cancelled';
 
 export default function CheckoutCancelPage() {
-    const [orderData, setOrderData] = useState(null);
     const searchParams = useSearchParams();
 
     // Get order_id from URL parameters
@@ -27,33 +26,6 @@ export default function CheckoutCancelPage() {
 
         // fetchOrder();
     }, [orderId]);
-
-    const handleTryAgain = async () => {
-        if (!orderData) return;
-
-        try {
-            // TODO: Implement retry checkout with order data
-            // Re-create the checkout session using the order data
-            // const response = await fetch('/api/stripe/checkout', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({
-            //         orderId: orderData.id, // Use the order ID
-            //         // Or reconstruct the order data
-            //         products: orderData.products,
-            //         orderDetails: orderData.orderDetails,
-            //         paymentType: orderData.paymentType
-            //     }),
-            // });
-
-            // const data = await response.json();
-            // if (data.url) {
-            //     window.location.href = data.url;
-            // }
-        } catch (error) {
-            console.error('Retry checkout error:', error);
-        }
-    };
 
     return (
         <CheckoutOrderCancelled

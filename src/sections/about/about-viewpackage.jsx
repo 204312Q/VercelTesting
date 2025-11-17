@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Image from 'next/image';
 
-import { CONFIG } from 'src/global-config';
 
 // ----------------------------------------------------------------------
 

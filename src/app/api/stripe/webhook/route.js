@@ -200,7 +200,7 @@ async function sendOrderConfirmationEmail(orderPayload, orderId) {
     let responseText;
     try {
       responseText = await response.text();
-    } catch (e) {
+    } catch {
       responseText = 'Could not read response text';
     }
 

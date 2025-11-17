@@ -6,14 +6,10 @@ import { varAlpha } from 'minimal-shared/utils';
 import Box from '@mui/material/Box';
 import Masonry from '@mui/lab/Masonry';
 import Grid from '@mui/material/Grid2';
-import Rating from '@mui/material/Rating';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
-
-import { fDate } from 'src/utils/format-time';
 
 import { _testimonials } from 'src/_mock';
 import { CONFIG } from 'src/global-config';

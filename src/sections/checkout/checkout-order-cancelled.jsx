@@ -12,7 +12,7 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export function CheckoutOrderCancelled({ onResetCart, onTryAgain, ...other }) {
+export function CheckoutOrderCancelled({ _onResetCart, _onTryAgain, ...other }) {
     return (
         <Dialog
             fullWidth
@@ -43,7 +43,7 @@ export function CheckoutOrderCancelled({ onResetCart, onTryAgain, ...other }) {
                 <OrderFailedIllustration />
 
                 <Typography color="text.secondary">
-                    We couldn't process your payment
+                    We couldn&apos;t process your payment
                     <br />
                     Please try again
                 </Typography>

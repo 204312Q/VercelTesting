@@ -11,7 +11,6 @@ import { _faqs } from 'src/_mock/_others';
 
 export function FaqsView() {
   return (
-    <>
       <Box sx={{ py: 5 }}>
         <Container component="section" sx={{ position: 'relative', pb: 10 }}>
           <Typography
@@ -26,6 +25,5 @@ export function FaqsView() {
           <FaqsList contents={_faqs} />
         </Container>
       </Box>
-    </>
   );
 }

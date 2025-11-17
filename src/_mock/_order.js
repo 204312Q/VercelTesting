@@ -163,7 +163,7 @@ export const _orders = Array.from({ length: 20 }, (_, index) => {
     shipping_address_id: index + 1,
     balance_due: Math.round((finalAmount - amountPaid) * 100) / 100,
     items_count: items.length,
-    customer: customer,
+    customer,
     orderNumber: `#${(60100 + index).toString()}`,
     created_at: orderDate,
     items,

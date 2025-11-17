@@ -1,10 +1,5 @@
-import { label } from 'yet-another-react-lightbox';
 import { _mock } from './_mock';
-import Image from 'next/image';
-import { sizeof } from 'stylis';
 import { paths } from 'src/routes/paths';
-import { createChainableState } from '@tiptap/core';
-import { DesktopDatePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 

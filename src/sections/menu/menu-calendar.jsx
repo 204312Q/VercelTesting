@@ -10,7 +10,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { paths } from 'src/routes/paths';
 
-const BASE_DATE = parseISO("2025-01-01");
 
 export default function MenuPage() {
     const [startDate, setStartDate] = useState(new Date());

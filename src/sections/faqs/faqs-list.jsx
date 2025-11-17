@@ -7,7 +7,6 @@ import Accordion from '@mui/material/Accordion';
 import Typography from '@mui/material/Typography';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import DOMPurify from 'dompurify';
 
 import { Iconify } from 'src/components/iconify';
 
